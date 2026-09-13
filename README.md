@@ -51,7 +51,11 @@ SKILLS_ROOT=~/.hermes/skills python3 scripts/skill_audit.py
 
 - 有新的减法思路、踩坑、更好用的判据 → 开 [Issue](https://github.com/feverZHONG/liya-subtraction-skill/issues)，说清场景就行（哪一类技能、删/并之前长什么样、之后怎样了）
 - 想直接改 → Fork + PR。改动请写清**删了什么、为什么**，只加不删的 PR 会被问
-- PR 合并后，作者侧会用 `bin/curation sync` 双向同步回本地副本（机制：以「上次同步」为共同祖先，git 三方合并，冲突不自动覆盖而是停下来给人看）
+- PR 合并后，作者侧会用 `bin/skillrepo skill-curation sync` 双向同步回本地副本（机制：以「上次同步」为共同祖先，git 三方合并，冲突不自动覆盖而是停下来给人看）
+
+## 姊妹仓库
+
+- [liya-persona-authoring](https://github.com/feverZHONG/liya-persona-authoring) —— 人格/身份文件维度上的同一套减法（附带阁下《角色设定写作模板 v1.2》）
 
 ## 许可
 
