@@ -55,7 +55,8 @@ SKILLS_ROOT=~/.hermes/skills python3 scripts/skill_audit.py
 
 ## 姊妹仓库
 
-- [liya-persona-authoring](https://github.com/feverZHONG/liya-persona-authoring) —— 人格/身份文件维度上的同一套减法（附带阁下《角色设定写作模板 v1.2》）
+- [liya-persona-authoring](https://github.com/feverZHONG/liya-persona-authoring) —— 人格/身份文件维度上的同一套减法（附带《角色设定写作模板 v1.2》）
+- [liya-sillytavern-cards](https://github.com/feverZHONG/liya-sillytavern-cards) —— 酒馆(SillyTavern)角色卡：写法（PList + Ali:Chat）、格式规格、三个 Python 工具
 
 ## 许可
 
