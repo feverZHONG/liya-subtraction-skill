@@ -6,19 +6,25 @@
 - SKILL.md 厚薄排行（找「厚技能候选」）
 - 无脚本目录清单（找「少说废话」候选）
 - T 分级统计
-用法: python3 skill_audit.py [--top N]
+用法: python3 skill_audit.py [--root 技能目录] [--top N]（也认 SKILLS_ROOT 环境变量）
 """
 import os, re, sys
 from pathlib import Path
 
-SKILLS = Path("/opt/data/skills")
+DEFAULT_ROOT = os.environ.get("SKILLS_ROOT", "/opt/data/skills")
+
 
 def main():
+    argv = sys.argv[1:]
+    root = Path(argv[argv.index("--root") + 1]) if "--root" in argv else Path(DEFAULT_ROOT)
+    if not root.is_dir():
+        print(f"ERROR: 技能目录不存在：{root}")
+        return 1
     top_n = 12
-    if "--top" in sys.argv:
-        top_n = int(sys.argv[sys.argv.index("--top") + 1])
+    if "--top" in argv:
+        top_n = int(argv[argv.index("--top") + 1])
 
-    dirs = sorted(d for d in SKILLS.iterdir() if d.is_dir())
+    dirs = sorted(d for d in root.iterdir() if d.is_dir())
     with_md = [d for d in dirs if (d / "SKILL.md").exists()]
     shells = [d for d in dirs if not (d / "SKILL.md").exists()]
     print(f"目录总数: {len(dirs)}  活跃 skill: {len(with_md)}  空壳: {len(shells)}")
