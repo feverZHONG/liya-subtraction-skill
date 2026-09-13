@@ -13,6 +13,7 @@
 |:------|:---------|
 | `skill-curation` | [liya-subtraction-skill](https://github.com/feverZHONG/liya-subtraction-skill) |
 | `persona-authoring` | [liya-persona-authoring](https://github.com/feverZHONG/liya-persona-authoring)（+ 配套模板） |
+| `sillytavern-cards` | [liya-sillytavern-cards](https://github.com/feverZHONG/liya-sillytavern-cards)（+ 配套分界文档） |
 
 ## CLI
 
