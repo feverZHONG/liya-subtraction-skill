@@ -30,5 +30,6 @@ description: >-
 | **md 格式体检（体积/\\n字面量/重复标题/编号跳号/断链 一键扫）** | `scripts/mdcheck.py`（bin/mdcheck）|
 | 踩坑列表 | `references/09-pitfalls.md` |
 | 精简历史（为什么删过/合并过，避免重复决策） | `references/pruning-history.md` |
+| **对外仓库 / 双向同步（curation CLI）** | `references/11-public-repo-sync.md` |
 
 **注意：** 本文档只是索引。具体内容在 references/ 下，按需打开对应文件。
