@@ -60,6 +60,17 @@
 4. `config/skill-repos.json` 加一行（有配套文件就加 `extra`）
 5. `bin/skillrepo <name> sync` 建基线；`bin/skillrepo list` 复核
 
+## 维护
+
+改完同步 CLI（`scripts/curation_sync.py`）**必须跑两个沙盒**（file:// 远程，不碰网络也不碰真仓库）：
+
+```bash
+python3 scripts/test_skillrepo_sync.py      # 基线/推/拉/自动合并/冲突保护/resolve/abort/删除跟随
+python3 scripts/test_skillrepo_extras.py   # 配套文件：基线/推/拉/冲突保护/人工对齐后放行
+```
+
+两套都过再收工——2026-09-13 建仓当天，就是配套文件那套沙盒揪出了「分歧判据看错对象」的真 bug。
+
 ## 踩坑
 
 1. **配套文件分歧判据看上游版本，不看工作副本**（见上，2026-09-13）
