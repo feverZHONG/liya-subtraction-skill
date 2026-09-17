@@ -57,6 +57,7 @@ SKILLS_ROOT=~/.hermes/skills python3 scripts/skill_audit.py
 
 - [liya-persona-authoring](https://github.com/feverZHONG/liya-persona-authoring) —— 人格/身份文件维度上的同一套减法（附带《角色设定写作模板 v1.2》）
 - [liya-sillytavern-cards](https://github.com/feverZHONG/liya-sillytavern-cards) —— 酒馆(SillyTavern)角色卡：写法（PList + Ali:Chat）、格式规格、三个 Python 工具
+- [liya-vision-recognition-traps](https://github.com/feverZHONG/liya-vision-recognition-traps) —— 视觉模型识图陷阱：19 条实测陷阱 + 真 OCR 通道 + AI 生图物理体检 + 两图差分
 
 ## 许可
 
