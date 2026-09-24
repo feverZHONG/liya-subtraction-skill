@@ -78,6 +78,32 @@ SKILL.md 的引用表统一用这个格式：
 | 踩坑记录 | `references/03-pitfalls.md` |
 ```
 
+## 拆薄工具 · `scripts/skill_thin.py`（2026-09-22 立）
+
+> 用途：**spec 驱动**地把厚 SKILL.md 拆薄——规矩留、案例搬，搬运逐字不丢。
+> 用法：写 `spec.json` → `python3 scripts/skill_thin.py spec.json`（dry-run 出报告）→ 加 `--write` 落盘。
+> 触发：某个 SKILL.md 超 30KB / 超 200 行；或要按同一模子一次拆好几个。
+
+spec 字段：`skill_dir` / `ref_meta`（新 ref 的题头）／`section_moves`（整节搬：`verbatim` 或 `auto_index`）／`moves`（逐条搬：`match` 前缀 + `keep` 一行）／`append`（拆分记录块，`#SIZE#` 自动填拆后体积）。
+
+**三条内建保证**
+
+1. **逐条守恒校验**——每条搬走的原文取其「最长差异窗口」当指纹：必须不在新 SKILL.md、必须在 ref 里；每条 keep 行必须出现在正文。
+2. **整篇守恒复核**（拆完自己再跑一遍）——原文每行（>40 字）必须出现在 `新 SKILL.md ∪ 新 refs` 里，缺一即报。
+3. 落盘前先备份：`cp SKILL.md cache/SKILL.md.<skill>.bak-$(date +%Y%m%d-%H%M)`。
+
+**三个坑（实测）**
+
+- **指纹别用固定切片**：keep 行常保留 ref 路径指针，固定切片（如 `25:50`）会假报「残留」；用「原文里最长的、不在 keep 里的 12 字窗口」才准。
+- **auto_index 防「冒号太靠前」**：`- 平台：…` 会被第一个全角冒号切成孤零零的 `- 平台`——规则＝冒号位置 <30 不切，无冒号的超长条目用 `index_overrides` 手给一句话。
+- **节替换后补空行**：repl 末尾不补空行，会把下一个 `## ` 顶上来粘在指针行后面。
+- **ref 头 frontmatter 的 skill 名别硬编码**（2026-09-22 修）：早先写死「随 war-criminal-archive 主 skill」，拆别的 skill 时四个子代理都得自己 sed 一遍——现在由 `skill_dir` 推导。
+- **两种 ref 落法**（2026-09-22 加）：`ref_meta.<ref>.append=true` ＝**并入既有 ref**（原样保留 + 追加一节带 marker），用在「一个主题一档、不重复存两遍」的场合（例：`delegation-and-verification` §七 并入既有 `landing-review-findings.md`）；`moves[].keep=""` ＝该条整体搬走、正文不留占位（别留一堆空行）。
+
+**换轴经验**（2026-09-22，`delegation-and-verification` 53.4KB → 15.8KB）：**先看每个「肥」在哪**——若条目已是一条判据一行、肥在**条目数**而非单条长度，那就不是「案例搬」，该**按场景切**（§一 任务书 / §三 验收 / §五 检索型 / §六 评审型 / §七 落地 / §八 外部评审 各成一档，高频的 §二 并行、§四 坑 原样留）。判据：随机抽 5 条，能砍掉一半字数的是「案例型」（搬），砍不动的是「判据型」（按场景整节搬）。
+
+**实测**（`war-criminal-archive`，2026-09-22）：SKILL.md 59.4KB／157 行 → **20.6KB／168 行（-65%）**，搬出 65 条 50.4KB 进 4 个新 ref（合计 55.1KB，多出的是题头）；守恒校验 0 丢失、0 残留。
+
 ---
 
 ## Prompt 做减法 · 独立场景

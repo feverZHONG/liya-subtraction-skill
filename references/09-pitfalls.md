@@ -4,6 +4,8 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 
 # 踩坑记录
 
+0. **`bin/mdcheck` 的「引用不存在」会误报说明文字里的裸文件名** — 它把反引号里的裸文件名当链接解析，所以**说明文字里列举的文件名**（SKILL.md 表格中「`relationship-web.md`：检查新角色…」、篇目录示例「`article.md` ＋ `逻辑链.md`」）一律被报断链。实测糖霜 skill 报 16 处、真断链只有 2 处（跨 skill 引用没写清是哪个 skill 的）。**判读先看路径**：带 `references/` 或跨 skill 前缀的才是真链，裸文件名＋说明文字＝合理误报，别去改文件。
+
 1. **absorbed_into 不搬文件** — `skill_manage(action='delete', absorbed_into='X')` 只记录元数据关系，不移动脚本。手动拷贝。
 2. **同名技能不一定真重复** — 不同天使可能有同名但内容不同的 skill，读全文判断，不能简单覆盖。
 3. **空壳目录没有 SKILL.md** — `diagramming`、`domain`、`feeds` 等只是分类占位，`skill_manage(action='delete')` 找不到它们，必须 `rm -rf` 从文件系统删。
@@ -22,3 +24,7 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 12. **游离脚本归位前先查 cron 软链依赖（2026-08-05）** — SKILL.md 里写 `python3 workspace/scripts/xxx.py` 而 skill 下无 `scripts/` = 脚本没归位。但 `workspace/scripts/` 的脚本可能是 cron 硬依赖：`/opt/data/scripts/` 下常有软链指向它（如 `bili_hot_push.py`、`patch_qqbot_send_target.py`），cron wrapper（no_agent script 字段）经软链调用。归位动作：`git mv` 保留历史 → 同步改 SKILL.md 引用 → **检查 `/opt/data/scripts/` 软链并重新指向新位置** → 语法验证 `python3 -m py_compile` → 全库 grep 残留引用。判别：被 cron wrapper/`sys.path.insert` 硬编码依赖的脚本（如 `qq_group_roster.py` 被 `qq_group_sync_cron.py` import）留原地，skill 引用保持绝对路径。
 13. **死引用标注「不可直接运行」而不是改指别处（2026-08-05）** — location references 引用了已删除的 `weather_cn.py`（fetch/parse_alarms/CITY_ID 接口已不存在），先试着改指 `weather_report.py` 但该脚本没有这些函数——改错。正确做法：确认原接口彻底消失后，在文件顶部标注「历史参考，不可直接运行」+ 给出当前可用命令，代码块保留原文。改引用前必须验证目标脚本确实提供被调用的接口。
 14. **双向同步的完成判据看文件标记，不看 index 状态（2026-09-13）** — 冲突是否解决要检查文件里还有没有 `<<<<<<<`，不能用 `git diff --diff-filter=U`：未合并记录在 `git add` 之前一直在，标记被人手改干净了也照样报「没改完」。同类：`git status --porcelain` 报的是 index 状态，不是内容对错。
+15. **并行会话会造出重复 skill（2026-09-18）** — 多个 hermes 会话同时在同一个案子上干活时，两边各自建了功能相同的 skill（`draft-salvage` vs `draft-archaeology`，相隔一分钟）。判别与处理：① 建 skill / 改共享文件**前先查一遍库**；② 撞车时不按新旧、**按完整度留**（本次留下的那份 references 更全、且已引用本案档案）；③ 把另一份里的**独有部分并过去**（收编了工具 `score.py` + 一份确认清单）再删重复；④ 合并后**统一两份之间不一致的参数**（脚本判据阈值与 references 不同 → 以更严的那份为准），并实测跑一遍拿数字。
+16. **skill_manage patch 被「frontmatter YAML」拦下时，先修 description 里的裸冒号（2026-09-21）** — 报错写「Patch would break SKILL.md structure: YAML frontmatter parse error: mapping values are not allowed here」，看着像本次改动的问题，实际是**文件里早就存在的**：`description` 里出现 `: `（典型是 `skill: novel-writing` 这类引用写法）＝YAML 裸标量带冒号，本身非法；校验只在 patch 时跑，所以一直没拦到。判别：报错行号指着**前几行的 frontmatter**、不是刚改的段落。做法：**同一批 operations 里顺手把 description 用双引号包起来**（`description: "…"`）即可过，别去改 body。另：patch 会抹掉文件开头的 BOM，无害。
+16. **改路径引用别只 grep 字符串形态（2026-09-22 平铺实战）** — 把 `knowledge/`、`writing/` 里的 8 个 skill 提平到顶层时，`grep "skills/writing/x/"` 抓到 26 处并全改了，但漏了**拼接式**的引用 `ROOT / "skills" / "writing" / "x"`（`short-stories-liya/scripts/story.py:369`）——它是几个独立字符串，正则和字符串替换都碰不到，直到 pre-commit 门禁跑挂才暴露。
+    规矩：**改完路径要把那几个脚本真的跑一遍**（或对每个路径段单独 grep 一次），别只信「引用全改完了」；门禁拦下来是运气好，拦不下来的会变成下次才炸的坑。

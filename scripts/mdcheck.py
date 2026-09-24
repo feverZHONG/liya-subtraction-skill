@@ -22,8 +22,9 @@ import sys
 from collections import Counter, defaultdict
 
 def is_placeholder(ref):
-    # 模板/占位示例：含尖括号、glob 通配符、篇号占位 ##、或明确示例词
-    if '<' in ref or '*' in ref or '?' in ref or '##' in ref:
+    # 模板/占位示例：含尖括号、花括号、glob 通配符、篇号占位 ##、或明确示例词
+    # 花括号是模板骨架的常用占位（`{编号}-成品.md`）——不排掉会把模板里的示例当真断链报
+    if '<' in ref or '{' in ref or '*' in ref or '?' in ref or '##' in ref:
         return True
     return any(m in ref for m in ('demo', '示例', '<id>'))
 
@@ -44,10 +45,17 @@ def iter_md(root: str):
 
 
 def check_backslash_n(path):
-    """字面反斜杠n：\\n 出现在正文（不是代码块/路径）"""
+    """字面反斜杠+n：正文里出现就是 patch 没转真换行。
+    代码块 / 行内代码里的不加引号反斜杠+n 不算——那是代码本身。"""
     hits = []
+    fenced = False
     for i, line in enumerate(open(path, encoding='utf-8'), 1):
-        if '\\n' in line:
+        if line.lstrip().startswith('```'):
+            fenced = not fenced
+            continue
+        if fenced:
+            continue
+        if chr(92) + 'n' in re.sub(r'`[^`]*`', '', line):
             hits.append(i)
     return hits
 
@@ -93,6 +101,19 @@ def check_numbering(path):
     return problems
 
 
+def _skill_root_hit(path, ref):
+    """往上找带 SKILL.md 的技能根，看 ref 相对根存不存在。
+    子目录（games/<游戏名>/）里的文档常按技能根写 `references/x.md`——不试这层会全被误报断链。"""
+    base = os.path.dirname(os.path.abspath(path))
+    while True:
+        if os.path.exists(os.path.join(base, "SKILL.md")):
+            return os.path.exists(os.path.normpath(os.path.join(base, ref)))
+        up = os.path.dirname(base)
+        if up == base:
+            return False
+        base = up
+
+
 def check_refs(path, ref_re, root):
     """反引号 .md 引用：目标相对当前文件不存在 → 提示（跨库/占位不算）"""
     hits = []
@@ -106,6 +127,12 @@ def check_refs(path, ref_re, root):
                 continue
             # 相对仓库根存在 = 跨库/素材来源标注，不算断
             if os.path.exists(os.path.normpath(os.path.join(root, ref))):
+                continue
+            # 跨 skill 引用（`<skill名>/references/x.md`）：仓库根是 hermes 家目录，
+            # 技能实际在 <root>/skills/<skill名>/ 下——不试这一层，跨 skill 引用全被误报断链
+            if os.path.exists(os.path.normpath(os.path.join(root, "skills", ref))):
+                continue
+            if _skill_root_hit(path, ref):
                 continue
             hits.append((i, ref))
     return hits

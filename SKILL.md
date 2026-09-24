@@ -21,6 +21,7 @@ description: >-
 | 合并另一个天使的工作区 | `references/03-cross-workspace-absorption.md` |
 | 审查技能的实际用途 | `references/04-usage-review.md` |
 | 把厚 SKILL.md 拆薄（功能拆分+实操流程+GROUP 优先级） | `references/skill-thinning-workflow.md` |
+| **拆薄工具（spec 驱动、守恒校验，规矩留案例搬）** | `scripts/skill_thin.py` |
 | 增量反馈沉淀到技能 | `references/06-runtime-enrichment.md` |
 | 确定哪些技能入仓/排除 | `references/07-version-control-classification.md` |
 | 快速识别什么情况该做什么 | `references/08-signal-recognition.md` |
@@ -33,3 +34,13 @@ description: >-
 | **对外仓库 / 双向同步（curation CLI）** | `references/11-public-repo-sync.md` |
 
 **注意：** 本文档只是索引。具体内容在 references/ 下，按需打开对应文件。
+
+## 并行会话防撞
+
+- **多 hermes 会话并行时**：建 skill / 改共享文件前先查重（同日撞过车，造出过功能重复的 skill）；改 INDEX 类共享文件时**防列头**（并行写入别把表头挤掉）。
+
+## 技能结构规范（阁下偏好）
+
+- 技能一律**平铺顶层**，内部只分 `references/` `scripts/` `templates/`。
+- **禁嵌套、禁内嵌**；目录深度 ≤ 4 层。
+- 自用技能的唯一判断标准 ＝ **顺不顺手**，用不上就是噪音。

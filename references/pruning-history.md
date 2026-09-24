@@ -7,6 +7,30 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 > 历史 audit 合并归档（2026-08-06 三合一）。保留每个日期的核心决策与教训，细节压缩。
 > 用途：做减法时先翻历史——「这个为什么删/合并过」避免重复思考或推翻旧决策。
 
+## 2026-09-22 · 第十一轮：拆薄 delegation-and-verification（换轴：按场景切）
+
+- 形状与前面 5 个不同：**没有案例尾巴可搬**——53.4KB 里几乎每条已是「一句判据＋实测数字」，肥在**条目数**（任务书 7 步＋8 条判例／验收 8 步带 26 条子判据／坑 14／检索型 20／评审型 15／落地 15／外部 6）。故换轴：**按「这次要干哪种活」分档**。
+- 53.4KB → **15.8KB**：§一 判例 → `references/task-brief-cases.md`（B1–B8）、§三 子判据 → `references/verification-cases.md`（V1–V26）、§五／§六／§八 整节 → `delegate-harvest.md`／`delegate-review-panel.md`／`external-review.md`、§七 **并入**既有 `references/landing-review-findings.md`（不重复存两遍）；**§二 并行、§四 坑 原样留本文**（每次派活都看的高频速查）。
+- 工具加两条能力：`ref_meta.<ref>.append`（并入既有 ref，原样保留＋追加带 marker 的一节）、`moves[].keep=""`（整条搬走、正文不留占位）。
+- 教训：**先判「肥在单条」还是「肥在条目数」再选轴**——抽 5 条，能砍掉一半字数＝案例型（搬），砍不动＝判据型（按场景整节搬）。
+- 归属：该文件上原有**别处会话的未提交增量**（§一.2、§三.8 两条），已先单独提一笔（提交信息写明「非本天使所写，仅代为落库」）再拆——这样 `git log` 里归因分得开。
+
+## 2026-09-22 · 第十轮：拆薄 prose-quality-metrics + war-criminal-archive（规矩留、案例搬）
+
+- **prose-quality-metrics 92.7KB → 17.6KB**（-81%）：铁律只留可执行那句，判例/反例/实测数字 → `pitfalls.md`（33.7KB）；八种「平」的诊断表 → `diagnosis-eight-flat.md`；改法手册／交付四件套／定口径·母题账·承接账各一档。SKILL.md + references 总量 155.8 → 157KB，一条信息没删。
+- **war-criminal-archive 59.4KB → 20.6KB**（-65%）：触发条案例 → `trigger-cases.md`（T1–T12）、速查表长注 → `flow-quickref-details.md`（F1–F14）、18 条维护纪律 → `maintenance-selfcheck.md`（M1–M18）、参考区全条目 → `scripts-index.md`（全量逐字）。
+- 立了工具 `skill-curation/scripts/skill_thin.py`（spec 驱动拆薄）：逐条守恒校验（原文指纹必须「不在新 SKILL.md、在 ref 里」）+ 整篇复核（原文每行 >40 字必须出现在 `SKILL.md ∪ refs`）。
+- 教训：**keep 行保留 ref 指针会让固定切片校验假报「残留」**（指纹要用「最长差异窗口」）；`- 平台：…` 这类「冒号太靠前」的索引行别自动切。
+
+## 2026-09-22 · 第九轮：拆 QQ 诊断大文件 + 顺手结案
+
+- 触发：TIM/`msg_type` 那轮收尾（群里 @ 结案）后，`bin/mdcheck` 标 🔴 强烈建议拆（22.5KB / 268 行）
+- 拆法：**按主题切**——「消息看不见 / 格式 / @ / 长度切块」独立成 `references/qq-message-visibility.md`（11.4KB）；原文件只留「消息没到网关 / 没发出去」的排查骨架（9.7KB）
+- 活引用逐处改指向（宿主 SKILL.md 路由表 + §3.5 引用、qq-group-intel 的 SKILL.md ×2 + 探针脚本注释、chat-game-referee 的 §TIM）——**跨 skill 引用要 grep 全库，别只看宿主目录**
+- ⚠️ **别用数字 §编号当跨文件锚**（旧文里的 `§3.5`/`§TIM` 一拆就全断）：写「文件名 + §语义小节名（§一/§二）」或直接写文件名
+- 顺手把已拍板的结论写成「✅ 结案」落进文件（TIM 看不到 = 方案②已上线、群里不 @），防下次重开方案讨论
+- 教训：**结论不落文件 = 下一轮重查一遍**（本轮就是上一轮刚拍过的 @ 结论被拿去从头取证）
+
 ## 2026-09-04 · 第八轮：合并 4 组伞 + 拆薄 6 个 + 结构平铺/官方噪音清理
 
 **合并（8 技能 → 4 伞，模式=宿主保留名+被并技能 SKILL.md 原样降级 references/，文件全迁，活引用逐处修）：**
@@ -95,3 +119,13 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 - 保留 9 个：hermes-agent（官方）/ internet-memes-reference（导视数据）/ short-stories-liya / ruozhiba-wordbank（已入口化）/ group-chat-discipline / info-hunt / build-analysis（高频主场景）/ （私档）-archive（索引）/ bili-audio-archive（刚合并内容密度高）
 - **前置（同轮）：** B站音频三件套合并 → bili-audio-archive（asmr-hifi + bili-hifi-audio 吸收，76 → 74 skill）
 - **教训：** 拆分时「说明 md」也能拆——已经写好的 references 不算内容，SKILL.md 里内嵌的详细说明才是要拆的对象
+
+## 2026-09-22 · short-stories-liya 减法（「规矩留、案例搬」第二轮）
+
+- **背景**：SKILL.md 25KB／p0-core 33KB，章节编号自己乱了（走到「五、六」又跳回「四·九/十/十一」），同一批判据在多处各写一版。阁下拍 **A 档**（判据＋阁下原话全留，血账／实测／session 实录搬独立案例档）。
+- **体积**：原有 11 份 135KB → **87KB（−36%）**；SKILL.md 25.4→12.2KB（−52%）；revision-workflow 9.7→2.5KB（−74%）；polish 13.3→4.2KB（−69%）；wings 6.6→1.5KB（−78%）；p1 8.9→7.0KB；p0-notes 14.0→10.7KB；vices 11.9→9.1KB；three-flows 5.6→3.7KB；p0-core 33.4→29.0KB。
+- **新档 7 份**：`tools.md`（工具手册）／`archive-state.md`（存档·沿革·判例）／`p0-core-cases.md`（血账）／`seven-layer-enrichment.md`／`title-naming.md`／`outlines/drafts/14|16-候选与过程.md`。
+- **抓手是「去重」不是「压字」**：四条硬红线在 p0-core／p1／three-flows／tools 各一份 → 归 p0-core §四·八；字数口径三处 → 归 p1 §五；弊端检查表两处 → 归 p1 §二；「加厚＝加事件」三处 → 归 p0-core §四·五。
+- **三处硬冲突裁决（旧口径未清，比肥更危险）**：①「字数不足＝感官层没挖完」删（与「加厚＝加事件」对撞）②七层上限只留一套（`vices` 的「每 300–400 字 1–2 种感官」）③「自由间接话语」判给 `vices` 的「只写可观测」，`seven-layer` 档里加边界注。
+- **判例·锚点不动**：`scripts/story.py` 里 10+ 处、`p1`／`three-flows`／`novel-writing`／项目 README 都按 **`p0-core §四·五/四·六/四·七/四·八`**、**`p0-notes 八/九`** 定位 → 结论：**只归位、不重编号**；p0-notes 重排后节号错位，改回原骨架（八＝一致性自查／九＝初见 vs 熟路）才没断链。**改判据档之前先 grep 全库的节号引用**。
+- **教训**：① 行级守恒校验对「重写型」文件会假报 36% 缺失——**换「判据指纹」（命令／阈值／区间／百分比）校验**才准（实测命令 6/6、阈值仅措辞差异）②大纲「一页纸」新规矩：骨架进大纲、过程料进 `drafts/`，**禁止再在文件尾新开带日期的章节层**（16 一天内从 0 长到 15KB 就是这么来的）③搬走节次后要补**占位标题**（`## 三、…（已移出 → drafts/）`），否则节号跳号、mdcheck 报错、交叉引用失锚。④**改文件别用 `open(p,'w')` 后再 `open(p).read()`**——先截断后读＝读到空，本轮就是这么把 18KB 的记账清空的（靠 git 恢复）。

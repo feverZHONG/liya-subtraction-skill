@@ -53,6 +53,20 @@
 3. `bin/skillrepo <name> diff` → 看具体改了什么
 4. `bin/skillrepo <name> sync` → 落到本地原件
 
+## 建仓前先做「同名邻居体检」（2026-09-18 阁下点出来）
+
+改名前 / 建仓前，先把**名字跟它像的**扫一遍——只看「活着的 skill」会漏掉三类：
+
+```bash
+ls -d skills/.archive/*                    # 归档区（.gitignore 锚定）里的同名兄弟：内容可能已被吸收，但名字会撞
+find skills -maxdepth 1 -type d -empty     # 空壳目录：改名/搬迁留下的残骸（曾把 skill 建在 skills/devops/ 里 → 被类目目录吞掉、零备份裸奔）
+grep -rn '<skill名>' skills scripts bin cron   # 谁按旧名引用着它（改名前必查）
+```
+
+再加一条口头确认：**要建的仓名在 GitHub 上有没有被人（包括自己）占了**——私有仓同名 = 发仓时直接撞车（实例：计划里的「玩法组」仓不能叫 `liya-games`，那名字是私有老游戏厅的）。
+
+判据：① 归档区同名兄弟 → 确认内容已被 live 版吸收，归档区不动；② 空壳 → 清（删目录要请示）；③ 旧名引用 → 全改；④ 仓名 → 避开。
+
 ## 新增一对仓库（配方）
 
 1. GitHub 建仓：public、`main`、空仓（API 建仓可能回 500/502 但其实建成了——建完 GET 一次确认）

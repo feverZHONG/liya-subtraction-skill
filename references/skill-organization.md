@@ -62,12 +62,39 @@ SKILL.md 太长时拆出 references/：
 2. SKILL.md 保留：Setup + 基本用法 + 推荐策略 + Pitfalls
 3. SKILL.md 末尾加指针：`skill_view("skill-name", "references/xxx.md")`
 
+## 资产归位：模板 vs 参考件
+
+「模板」这词在库里管着四种东西，不判性质就是各放各的——2026-09-18 全库体检：
+10 个 skill 有 `templates/`，另有 7 份「模板」躺在 `references/` 里。
+
+### 判据三问
+
+| 问 | 放哪 |
+|:---|:-----|
+| 是「复制 → 填空 → 成为产物」的骨架吗？（有复制指令、大片占位符） | `templates/` |
+| 是「描述规则 / 格式 / 约定」的说明吗？ | `references/` |
+| 是「某一类数据的条目骨架」吗？ | **跟数据放一起**（数据目录内的 `_template.md`），**不进 `templates/`** |
+
+第三类最容易被误判成混用：`memes/技术梗/_template.md` 就挨着那类梗文件，新增条目时随手复制——
+**就地是对的**，别挪。同理 `purchases/_template.md`、`references/games/_template.md`。
+
+### 命名
+
+- 是模板 → 文件名带 `-template` / `-模板`，一眼能认
+- **不是模板别叫 template**——`references/template.md` 点进去是命名与结构约定（一个占位符都没有），该改名，不是该搬家
+
+### 已发布仓库是硬约束
+
+挂在公开仓库当配套文件的（`skill-publishing` 的 extra 机制），改名/移动必须连同仓库侧一起改——
+先 `bin/skillrepo <name> status` 看清两侧，别单方面动。
+
 ## 维护检查清单
 
 | 检查项 | 标准 |
 |:-------|:-----|
 | 所有 skill 在顶层？ | `ls -1d skills/*/` 无类别目录 |
 | 无子目录含 SKILL.md？ | `find skills -mindepth 3 -name SKILL.md` 空 |
+| 有无模板放错位置？ | `find skills -path "*/references/*" \( -name "*template*" -o -name "*模板*" \) -not -path "*/templates/*"` → 逐个点开看内容判性质（名字骗人的只改名、真骨架才搬） |
 | 层级深度 ≤ 4？ | `find skills -type f -printf '%d\n' \| sort -rn \| head -1` ≤ 4 |
 
 ## 使用纪律：先报告再动手 ⚠️
