@@ -14,6 +14,7 @@
 | `skill-curation` | [liya-subtraction-skill](https://github.com/feverZHONG/liya-subtraction-skill) |
 | `persona-authoring` | [liya-persona-authoring](https://github.com/feverZHONG/liya-persona-authoring)（+ 配套模板） |
 | `sillytavern-cards` | [liya-sillytavern-cards](https://github.com/feverZHONG/liya-sillytavern-cards)（+ 配套分界文档） |
+| `sillytavern-worldbook` | [liya-sillytavern-worldbook](https://github.com/feverZHONG/liya-sillytavern-worldbook) |
 
 ## CLI
 
@@ -70,10 +71,12 @@ grep -rn '<skill名>' skills scripts bin cron   # 谁按旧名引用着它（改
 ## 新增一对仓库（配方）
 
 1. GitHub 建仓：public、`main`、空仓（API 建仓可能回 500/502 但其实建成了——建完 GET 一次确认）
-2. 复制 skill → `/opt/data/repos/<repo>`，补 README.md / LICENSE / .gitignore（这三个是仓库专属，双向都绕开）
-3. `git init -b main` + `git config user.name/email` + commit + push（github.com 的 443 时好时坏，push 要重试）
-4. `config/skill-repos.json` 加一行（有配套文件就加 `extra`）
-5. `bin/skillrepo <name> sync` 建基线；`bin/skillrepo list` 复核
+2. **先脱敏，再复制**（无仓库的那份 skill 是最容易忘的——它一直在私有库里裸着）：扫项目名 / 角色名 / 本机路径（`/opt/data`、`workspace/`）/ 对「阁下」的称呼；例子里的专有名词换中性示例（`my-world.json`、`示例键`），**机制与实测数字一字不动**。判据：`grep -rn "项目名\|/opt/data\|workspace/" skills/<name>/` 无输出
+3. 复制 skill → `/opt/data/repos/<repo>`，补 README.md / LICENSE / .gitignore（这三个是仓库专属，双向都绕开）
+4. `git init -b main` + `git config user.name/email` + commit + push（github.com 的 443 时好时坏，push 要重试；失败就 `bin/gitpush` 切通道补推）
+5. `config/skill-repos.json` 加一行（有配套文件就加 `extra`）
+6. `bin/skillrepo <name> sync` 建基线；`bin/skillrepo list` 复核
+7. **新仓的 README 要跟老仓互列**（「互列不留断链」）——往每个老仓的「姊妹仓库」段加一行，别只在新仓里列别人
 
 ## 维护
 
@@ -92,3 +95,4 @@ python3 scripts/test_skillrepo_extras.py   # 配套文件：基线/推/拉/冲�
 2. **冲突是否解决看文件里还有没有 `<<<<<<<`**，不能看 `git diff --diff-filter=U`——index 的未合并记录在 `git add` 之前一直在，人手改干净了也照样报「没改完」（2026-09-13）
 3. **`repos/` 要进 `.gitignore`**：外层 NAS 库若把独立仓库当目录收进去，会变成 gitlink（伪 submodule），commit 时提示「embedded git repository」
 4. **独立仓库的内容不进每日文字包**——除非在 `scripts/backup_text.py` 的 `EXTRA_REPOS` 里登记（已登记，每天扫进去）
+5. **改了成对出现的样本要重跑自测**：引擎自测里同一份样本常在两处成对出现（卡侧 / WI 侧各一份），只改一处 → 「两侧解析一致」断言必挂（2026-09-24 脱敏时实际踩到，被自测逮住）。改完必跑 `selftest`，别信「只是改了个字符串」——脱敏/改名类改动同样要走这一步
