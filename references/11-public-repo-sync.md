@@ -96,3 +96,8 @@ python3 scripts/test_skillrepo_extras.py   # 配套文件：基线/推/拉/冲�
 3. **`repos/` 要进 `.gitignore`**：外层 NAS 库若把独立仓库当目录收进去，会变成 gitlink（伪 submodule），commit 时提示「embedded git repository」
 4. **独立仓库的内容不进每日文字包**——除非在 `scripts/backup_text.py` 的 `EXTRA_REPOS` 里登记（已登记，每天扫进去）
 5. **改了成对出现的样本要重跑自测**：引擎自测里同一份样本常在两处成对出现（卡侧 / WI 侧各一份），只改一处 → 「两侧解析一致」断言必挂（2026-09-24 脱敏时实际踩到，被自测逮住）。改完必跑 `selftest`，别信「只是改了个字符串」——脱敏/改名类改动同样要走这一步
+6. **`sync` 的 fetch 会挂死（2026-09-25 实踩）**：本机 `github.com` 时通时不通，`sync` 第一步就是拉远程 → GnuTLS/TCP 挂住，180s 超时，看着像「什么都没干」。**先看副本的 `git log`**：挂住的往往是 push 那一步，提交已经落地（`local: 本地副本同步（<时间>）`）。这时别反复重试 `sync`，直接在副本目录补推：
+   ```bash
+   cd /opt/data/repos/<repo> && /opt/data/bin/gitpush --channel api   # 直连不通时走 API 重放
+   ```
+   回读核实**不靠 git 自己**（它连不上）：`api.github.com` 的 `commits/main` 拿 sha、`contents/<路径>?ref=main` 拿 base64 内容对一眼（公开仓免 token）。
