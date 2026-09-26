@@ -56,9 +56,15 @@ def find_heading(lines, heading):
 
 
 def section_end(lines, start):
+    """节尾 = 下一个**同级或更高级**的标题（`###` 节不会被 `##` 兄弟节吞掉）。
+    2026-09-25 修：早先只认 `## `，对 `###` 子节会一路吞到父节末尾。"""
+    lvl = len(lines[start]) - len(lines[start].lstrip("#"))
     for i in range(start + 1, len(lines)):
-        if lines[i].startswith("## "):
-            return i
+        s = lines[i]
+        if s.startswith("#"):
+            n = len(s) - len(s.lstrip("#"))
+            if n <= lvl and len(s) > n and s[n] == " ":
+                return i
     return len(lines)
 
 
@@ -93,19 +99,41 @@ def main():
     keeps = []        # keep 文本
 
     def probe_of(text):
-        """指纹取**原文尾部** 25 字：keep 行总是比原文短，正文里不该再出现原尾。"""
+        """指纹取**原文尾部** 25 字：keep 行总是比原文短，正文里不该再出现原尾。
+        短行（<25 字）不作指纹——```` ```bash ````、表格分隔行这类格式行必然与保留节撞车（假残留）。"""
         t = text.strip()
+        if len(t) < 25:
+            return None
         return t[-25:] if len(t) > 45 else t
 
     def detail_probe(orig, keep):
         """真正被搬走的那段细节 = 原文里最长的一个「不在 keep 里」的 12 字窗口。
-        返回 None 表示这条没搬动（keep＝原文）。"""
+        返回 None 表示这条没搬动（keep＝原文），或短行（<30 字，格式行不做指纹）。"""
         o, k = orig.strip(), (keep or "").strip()
-        if o == k:
+        if o == k or len(o) < 30:
             return None
         wins = [o[i:i + 12] for i in range(0, max(1, len(o) - 11))]
         cands = [w for w in wins if w not in k]
         return max(cands, key=len) if cands else None
+
+    # ⓪ 按原始行号搬（line_moves；坐标基于**原文件**，倒序执行避免索引漂移）
+    #    适用：厚 SKILL.md 里「顶层条目行保留、缩进展开整块搬走」的拆法
+    for lm in sorted(spec.get("line_moves", []), key=lambda x: -x["start"]):
+        s, e = lm["start"] - 1, lm["end"]
+        block = lines[s:e]
+        ref = lm["ref"]
+        label = lm.get("label", "")
+        title = lm.get("title", "")
+        chunk = "\n".join(x.rstrip() for x in block).rstrip()
+        head = (f"### {label} · {title}\n\n" if title else
+                (f"### {label}\n\n" if label else ""))
+        ref_buf.setdefault(ref, []).append(head + chunk + "\n")
+        for ln in block:
+            if ln.strip():
+                moved.append((label or title, ref, ln,
+                              detail_probe(ln, lm["keep"]) or probe_of(ln)))
+        keeps.append(lm["keep"])
+        lines[s:e] = [lm["keep"]]
 
     # ① 整节搬
     for sm in spec.get("section_moves", []):
@@ -115,7 +143,7 @@ def main():
         ref = sm["ref"]
         buf = ref_buf.setdefault(ref, [])
         if sm.get("mode") == "auto_index":
-            buf.append("\n".join(body).rstrip())
+            buf.append((lines[h] + "\n\n" + "\n".join(body)).rstrip())
             ov = sm.get("index_overrides", {})
             repl = sm["keep_intro"].rstrip("\n").split("\n")
             for ln in body:
@@ -132,8 +160,8 @@ def main():
                     moved.append((sm.get("label", sm["heading"]), ref, ln, p))
             repl += [""] if repl[-1] != "" else []
         else:
-            buf.append("\n".join(body).rstrip())
-            for ln in body:
+            buf.append((lines[h] + "\n\n" + "\n".join(body)).rstrip())
+            for ln in [lines[h]] + body:
                 if ln.strip():
                     moved.append((sm.get("label", sm["heading"]), ref, ln,
                                   probe_of(ln)))
