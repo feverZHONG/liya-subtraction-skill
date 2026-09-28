@@ -15,6 +15,13 @@
 | `persona-authoring` | [liya-persona-authoring](https://github.com/feverZHONG/liya-persona-authoring)（+ 配套模板） |
 | `sillytavern-cards` | [liya-sillytavern-cards](https://github.com/feverZHONG/liya-sillytavern-cards)（+ 配套分界文档） |
 | `sillytavern-worldbook` | [liya-sillytavern-worldbook](https://github.com/feverZHONG/liya-sillytavern-worldbook) |
+| `vision-recognition-traps` | [liya-vision-recognition-traps](https://github.com/feverZHONG/liya-vision-recognition-traps) |
+| `chat-game-referee` | [liya-chat-game-referee](https://github.com/feverZHONG/liya-chat-game-referee) |
+| `spy-game` | [liya-spy-game](https://github.com/feverZHONG/liya-spy-game) |
+| `sea-turtle-soup` | [liya-sea-turtle-soup](https://github.com/feverZHONG/liya-sea-turtle-soup) |
+| `delegation-and-verification` | [liya-delegation-and-verification](https://github.com/feverZHONG/liya-delegation-and-verification) |
+
+（权威名单看 `bin/skillrepo list`；本表是给人看的对照。）
 
 ## CLI
 
