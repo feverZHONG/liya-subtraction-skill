@@ -17,7 +17,7 @@
         双向引用分布：谁引用它（改动前必查）／它引用了谁。
   另有转发：audit（清点库）｜retire [--days N]（出库候选）｜thin <spec.json>（拆薄）
 
-约定：/opt/data/skills 下的**点开头目录**（.archive/.curator_backups/.hub）不是技能，一律跳过。
+约定：技能根（`SKILLS_ROOT`）下的**点开头目录**（.archive/.curator_backups/.hub）不是技能，一律跳过。
 """
 import json
 import os

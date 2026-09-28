@@ -11,7 +11,7 @@
 
 spec.json 结构：
 {
-  "skill_dir": "/opt/data/skills/xxx",
+  "skill_dir": "<技能根>/xxx",
   "ref_meta": {                      # 每个要新建的 references 文件的题头
     "references/trigger-cases.md": {"title": "# 触发详案 · …", "note": "> 2026-09-22 从 SKILL.md 拆出，内容一条未删。"}
   },
