@@ -7,9 +7,9 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 > 历史 audit 合并归档（2026-08-06 三合一）。保留每个日期的核心决策与教训，细节压缩。
 > 用途：做减法时先翻历史——「这个为什么删/合并过」避免重复思考或推翻旧决策。
 
-## 2026-09-28 · 第十七轮：三件合并 + 一件并入 + 一件拆薄（阁下「逐个处理」）
+## 2026-09-28 · 第十七轮：三件合并 + 一件并入 + 一件拆薄（用户「逐个处理」）
 
-- 触发：阁下「检查一下手上的 skill，看看有哪些是不常用的、可以合并的、可以做减法的、顺带可以拆分的」→ 出体检报告（`workspace/records/2026-09-28-skill库体检报告.md`：107 个 / 唯一 ≥60 天零调用是 `debug` / 42MB 是四个档案库）→ 阁下「应该可以逐个处理了」。
+- 触发：用户「检查一下手上的 skill，看看有哪些是不常用的、可以合并的、可以做减法的、顺带可以拆分的」→ 出体检报告（`workspace/records/2026-09-28-skill库体检报告.md`：107 个 / 唯一 ≥60 天零调用是 `debug` / 42MB 是四个档案库）→ 用户「应该可以逐个处理了」。
 - **三件合并（每件都先重核原文，没照报告的印象动手）**：
   - `brief-convergence` → `option-set-authoring`：两边各写一遍同一批判据（同族／同质／归零／撞已用），归并成宿主 §一「四道自检」（新增「撞已用」＋血账），独有内容（三个拆动作／迭代纪律／收尾／不做什么）逐字搬 `references/brief-convergence.md`。
   - `galgame-text-archive` → `paper2gal`：**实测是同一件事存两份**——paper2gal 的 `references/galgame-guide.md` 早把整条流程写全（编码→块识别→切分→索引→导读，连踩坑都重合）。只把独有部分（视角切换识别／素材交接／信息源铁律／切分校验命令／符号自查）逐字补进该档 §六–§十，**不新建第二档**。
@@ -27,18 +27,18 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 - **数字**：六件 mdcheck 对基线全不欠账；守恒逐件（194／94／85／108／108 条长行）**0 缺失**；按节名引用改指 5 处。**并行会话纪律实战**：`subtitle-proofreading` 当日 10:45 被另一会话改过，先让路、确认 27 分钟无写入后才动手（只碰 SKILL.md，不碰对方未提交的 `scripts/asr_export_parse.py`）。
 
 
-## 2026-09-26 · 第十六轮：立「进出门」（阁下问「有必要整 109 个 skill」之后）
+## 2026-09-26 · 第十六轮：立「进出门」（用户问「有必要整 109 个 skill」之后）
 
-- 阁下 02:57 问「在想着有必要整 109 个 skill？」→ **先摆事实再答**：107/109 真被调用过（零调用的 2 个是本周新建）、预载索引 **7049 字符 description／轮**（≈每轮会话固定付的税）、51MB 里 **42MB 是四个档案库**（数据资产，references 不预载）。
-- 两条路摆给阁下：① 同族合并（B站系 5→2、提取器 6→2，能落到 ~95，顺手治「同族各占一个触发位」）② 不动数量、加门（新建标准 + 季度对账）。**阁下拍 ②**，并加一条规矩：**「即便是方案一整合并，也要同步更新 skill 才行」**。
+- 用户 02:57 问「在想着有必要整 109 个 skill？」→ **先摆事实再答**：107/109 真被调用过（零调用的 2 个是本周新建）、预载索引 **7049 字符 description／轮**（≈每轮会话固定付的税）、51MB 里 **42MB 是四个档案库**（数据资产，references 不预载）。
+- 两条路摆给用户：① 同族合并（B站系 5→2、提取器 6→2，能落到 ~95，顺手治「同族各占一个触发位」）② 不动数量、加门（新建标准 + 季度对账）。**用户拍 ②**，并加一条规矩：**「即便是方案一整合并，也要同步更新 skill 才行」**。
 - 落地：新档 **`references/growth-gate.md`**（进：新建三问；出：季度对账 + 四条资产判据；**合并必同步七件套**）+ 新工具 **skill_retire_scan.py**（一条命令出「谁≥N 天没被调用」的事实表；零调用但创建<30 天的单独分组不算候选）+ SKILL.md 索引两行。
 - 顺手同步下游（合并必同步的第 6 件）：发布候选表清幽灵行 `pdf-compression`（112→111 行）、`dev-workflow/references/scriptification-audit-method.md` 里 am-tool 的路径改成 `workspace/scripts/am-tool-collection/`。
-- 沉淀的判据：**零调用 ≠ 无用**（档案库／内容型／勿忘类／季节性／带脚本的工具手册——五类一律保留）；**候选清单只交阁下裁**，降级（git mv + 经验压 memory）优先于删除。
+- 沉淀的判据：**零调用 ≠ 无用**（档案库／内容型／勿忘类／季节性／带脚本的工具手册——五类一律保留）；**候选清单只交用户裁**，降级（git mv + 经验压 memory）优先于删除。
 - 首次跑出的表里有两个高频件停在 08-24（`daily-news-poster` 170 次、`morning-briefing-audio` 41 次）——顺手核了 cron：任务「每日新闻简报」**08-12 起就是 `enabled=False`**（主动停用，不是链路故障）。**零调用清单要先排除「任务本来就被停了」这一类**，否则会把停用误读成故障。
 
 ## 2026-09-26 · 第十五轮：薄壳组并入（第三批 / 方案一的续手）
 
-- 阁下 02:41 问「现在还能动吗」→ 拍**方案一续**：薄壳组先并、低频串出建议表。
+- 用户 02:41 问「现在还能动吗」→ 拍**方案一续**：薄壳组先并、低频串出建议表。
 - **`corpus-chara-archive`（2.1KB，1 次）→ `archive-library-ops`**：判据指纹 **13/13 命中**该库（跨章编号／官方简介覆盖不全／并行子代理 row-scoped／stdout 截断／收尾同步旧档都在，且更全、带「详案 Dn」引注）——只余四条实测细节并入 source-fidelity 档：出场次数三口径会打架（484 vs 562）、grep「先列章再抽行」、跨章证据链的链式写法、批量读长文的两个工具坑（切片打印／中文路径走 shell grep）。
 - **`solo-scene-craft`（1.9KB，0 次）→ `prose-quality-metrics`**：反向情形——判据 9/11 独有（自我对话／念头不用冒号／三样动力／借心态不借抒情／自检四问），**整档搬**为该库新档 solo-scene，SKILL 参考索引加一行。
 - **数字**：磁盘 **112 → 110**；台账 102 active + 8 stale = 110（0 ghost／0 漏登）；mdcheck：archive-library-ops 9=9 平、prose-quality-metrics 8→5（降）；跨 skill 长行 36 组持平；布局 0 嵌套。提交 `506f99dc`。
@@ -47,7 +47,7 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 
 ## 2026-09-25 · 第十四轮：板块合并（同主题两 skill → 一份正本）
 
-- 阁下「看一下手上的 skill，有哪些是用不上的，要么整合，要么扔到别处存档」→ 出账目（**114 个 / 184MB / 台账 0 幽灵 0 漏登**），挑出「硬重复两组 + 薄壳三个 + 低频一串」交阁下裁；阁下拍**方案一：只动两组硬重复**。
+- 用户「看一下手上的 skill，有哪些是用不上的，要么整合，要么扔到别处存档」→ 出账目（**114 个 / 184MB / 台账 0 幽灵 0 漏登**），挑出「硬重复两组 + 薄壳三个 + 低频一串」交用户裁；用户拍**方案一：只动两组硬重复**。
 - **① 悟饭组 `wufan-extractor` → `wufan-forum`**：同站点（悟饭游戏厅）两份——extractor 是 `bin/wufan` 用法页（域名线表 / 分享页 DOM / 坑 5 条），forum 是完整考古流（下载 / 验证 / 发帖人 / 归档指向 / 下架史）。并入 SKILL §零（CLI）+ 域线表 + 坑表 5 条 + 新档 dom-notes；`scripts/wufan.py` 随迁、`bin/wufan` 改指。**宿主选 forum：它有活引用（chat-record-archiving）＋在发布候选表里**。
 - **② 旧稿组 `legacy-draft-mining` → `draft-archaeology`**（第三份是 `corpus-line-mining/references/legacy-draft-cards.md`）：三处讲同一件事（甩旧稿→切素材库+重建大纲）。并入 **5 处**——返工轮 6 条→`thicken-and-reuse.md`；三道改 / 优先捡用户提的场景 / 旧料残留设定 / 身份一致性 / 挖料单四档 / 核引文先分类后计数→mining-and-yield 档；情绪核 / 对称结构 / 复述压缩当大纲模板→outline-confirmation 档；逐段对回消息号 + 源头纪律→ai-hand-fingerprints 档；判笔结论会被推翻等 4 条→pitfalls 档；`adaptation-workflow.md` 整档随迁（§一 压成指针，其余原样）、`scripts/dialog-ratio.py` 随迁。`legacy-draft-cards.md` 独有部分搬完即删，corpus-line-mining 两处引用改指 `skill: draft-archaeology`。
 - **数字**：磁盘 **114 → 112**；draft 全集 25.8k → 31.8k 字（只增独有，一条未删）；跨 skill 相同长行 **49 → 36 组**；mdcheck：draft 0 / wufan-forum 1（旧账 `metal-slug.md` 跨库指针，未动）/ corpus-line-mining 1（旧账）。提交 `d7c1bf0c`。
@@ -59,12 +59,12 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 - **B 跨 skill 逐字重复**：① genshin × wuthering 的《角色中心拓展法》相似度 0.937 → 正本归 `wuthering-waves`（zzz-archive 早就是「指针＋本库口径」的正确姿势，照它的模子），genshin 档 4.0→1.3KB 只留钟离走法；② 外部评估采信（prose 铁律 6 × platform「外部 AI 评估·采信流程」重合约七成）→ **正本归 platform**（12 条，prose 独有的 4 条先逐字并入再改指针）；③ taobao 申请文案 → 正本归 `taobao-affiliate/references/register.md`。**跨 skill 重复长行 64 → 49 组**（余下多为自包含技术片段：UA 串、activate 路径、playurl URL 模板，属必要重复）。
 - **C usage 台账**：`.usage.json` ghost 28 个标 `archived`（磁盘已无的 skill），补录 1 个；验证 **active 106 + stale 9 = 磁盘 115**；备份落 `.curator_backups/`。
 - **教训**：① 空壳类别目录会反复复活（第三/五轮各删过一次）——删 DESCRIPTION.md 不够，得连类别目录一起拔；② **「同主题两个 skill」逐字比对查不出来**（bili-manga-download × bilibili-api-ops 共同长行 0 条，但两处都在维护同一套漫画下载知识）——得按主题点名查，不看行级重复率；③ `.usage.json` 是 gitignore 文件（`:55`），清理前必须自己备份，且 `stale` ≠ 已删除（9 个磁盘在用的 skill 是 stale，别误判成 ghost）。
-- **阁下垂裁（同日落地）**：① 漫画下载**保独立 skill 当正本**——`bilibili-api-ops` 那份 4.7KB 全文整份并入 `bili-manga-download/references/interface-notes.md`（接口现状表／cpx 格式／完整 hook 代码，一条未删），那边改指针；② `game-vehicle-research` **降级为记忆**——经验＋案例压缩进 `workspace/memory/game-vehicle-research-experience.md`，删 skill，publish-candidates 去行，台账标 `archived`（**skill 数 115 → 114**）。
+- **用户垂裁（同日落地）**：① 漫画下载**保独立 skill 当正本**——`bilibili-api-ops` 那份 4.7KB 全文整份并入 `bili-manga-download/references/interface-notes.md`（接口现状表／cpx 格式／完整 hook 代码，一条未删），那边改指针；② `game-vehicle-research` **降级为记忆**——经验＋案例压缩进 `workspace/memory/game-vehicle-research-experience.md`，删 skill，publish-candidates 去行，台账标 `archived`（**skill 数 115 → 114**）。
 - 另记一条结构隐患：某个私人资料库的 `references/label-systems/moe-props/…` 深达 8 层（规范 ≤4），是数据树不是杂物，动它会断链，留待专项。
 
 ## 2026-09-25 · 第十二轮：四件连拆（line_moves + 三处工具修复）
 
-- 阁下点名「检查手上的 skill，特别是今天整的那几个，需要做减法跟做拆分了」→ 出一份体检报告请他挑批次，他勾「拆今天动过的厚 SKILL」。
+- 用户点名「检查手上的 skill，特别是今天整的那几个，需要做减法跟做拆分了」→ 出一份体检报告请他挑批次，他勾「拆今天动过的厚 SKILL」。
 - **四件，162.3KB → 42.3KB（−74%）**，全部 0 丢失／0 残留、mdcheck 都不高于各自基线：`prose-quality-metrics` 60.6→19.1（铁律一节占 75%，判据留／缩进展开搬）｜`md-link-maintenance` 28.9→6.5（细粒度场景 17 节归四档）｜`draft-archaeology` 36.3→9.9（`###` 工序子节按主题归位）｜`dev-workflow` 36.5→6.8（32 条原则逐条搬、按场景四档）。
 - **四件四种轴**：同一批里也没有通用拆法——按「肥在单条还是肥在条目数」「留哪一句」逐件判：判据留＋展开搬（prose）／整节按事归档（md-link、draft）／逐条按场景分档（dev）。
 - **工具加一条能力**：`line_moves`（按原文件行号搬行段，内部倒序执行）——补上 `section_moves`（整节）与 `moves`（单条）之间的空档。
@@ -130,7 +130,7 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 - **拆薄 bili-video-content 143→78**：1b 字幕深挖/1c 研究类/1d 剧情概括三法→`references/advanced-extraction.md`、踩坑 10 条→`references/pitfalls.md`
 - **⚠️ 教训：patch 全量重写 SKILL.md 前先 `git diff` 看工作区未提交内容**——bili-video-content 有段「分析产出登记/挂指针」指引只存在于未提交工作区（HEAD 没有），被全量替换覆盖，靠 diff 察觉后补回
 - **一个史料类 skill（145）判定保留**：它已是 08-11 从 224KB 拆出的入口壳（触发+流程速查+脚本导视全是指针，内容在 50+ references）——「合理保留」类，不拆
-- **低频候选审读结论（全保留）**：steam-api（08-26 仍实战更新，活跃）/ build-analysis（用户深度 GBF Relink 配套数值库）/ 原创连载档案（阁下原创连载档案=勿忘类）→ 全数保留；am-tool-collection（前端小工具六合一，结构完整有 CLI）→ 唯一待阁下表态项，不占加载成本先留
+- **低频候选审读结论（全保留）**：steam-api（08-26 仍实战更新，活跃）/ build-analysis（用户深度 GBF Relink 配套数值库）/ 原创连载档案（用户原创连载档案=勿忘类）→ 全数保留；am-tool-collection（前端小工具六合一，结构完整有 CLI）→ 唯一待用户表态项，不占加载成本先留
 
 ## 2026-08-24 · 第六轮：做减法（第二批）
 
@@ -146,7 +146,7 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 
 - **清 12 空壳目录**（apple/autonomous-ai-agents/creative/email/github/media/mlops/note-taking/productivity/research/smart-home/social-media）——第三轮删过的类别残留 DESCRIPTION.md 皮又复活，连根拔（69 skill 实际 81 目录）
 - **吸收：system-ops → environment-hygiene**（69 → 68）——system-ops 是 13 行索引壳，references 31 文件（tech-workflow 模块 16 + workspace-hygiene 模块 12 + cron-ops + 2 索引），其中 workspace-hygiene 与 environment-hygiene 重叠；整包搬入 `environment-hygiene/references/system-ops/`，SKILL.md 加模块索引，删除 system-ops
-- **降级：windows-update-info 删 skill 留经验**（68 → 67）——零使用记录 + 阁下裁决「顶多算经验，不至于要做成 skill」；核心经验压缩进 `workspace/memory/windows-update-experience.md`，查 KB 大小脚本 `catalog_size.py` 挪 `workspace/scripts/` 保留，skill 删除
+- **降级：windows-update-info 删 skill 留经验**（68 → 67）——零使用记录 + 用户裁决「顶多算经验，不至于要做成 skill」；核心经验压缩进 `workspace/memory/windows-update-experience.md`，查 KB 大小脚本 `catalog_size.py` 挪 `workspace/scripts/` 保留，skill 删除
 - **降级×2：svg-vector-drawing + ai-subscription-plans 删 skill 留经验**（67 → 65）——svg 是 08-10 为光梭手枪刚建的（矢量画低频），ai-subscription 是 08-07 调研完（价格快照会过时）；经验压缩进 `workspace/memory/svg-drawing-experience.md` + `ai-subscription-experience.md`，render_svg.py 挪 `workspace/scripts/`，skill 删除
 - **吸收：game-character-lookup → chara-profile**（65 → 64）——速查（笔误验证/CV/剧情问答）并入 chara-profile 新「速查」章节，lookup_bilibili.py 脚本随迁，原 SKILL.md 存 `references/absorbed/`
 - **吸收：xiaoheihe-archive → 一个史料类 skill**（64 → 63）——它本就有「流程（小黑盒佐证类）」章节 + grab_xiaoheihe.py 脚本，独立 skill 只是重复；SKILL.md 存 `references/xiaoheihe-archive.md`，两处原 skill 引用改指向
@@ -173,12 +173,12 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 - **合并：** environment-hygiene 吸收 workspace-org + output-path-hygiene（三合一 umbrella）
 - **吸收：** cron-news-workflow → daily-news-poster；skill-organization → skill-curation
 - **六合一：** am-tool-album/edu-site/filter-lab/music-personality/pattern/word-sticker → am-tool-collection
-- **教训：** 「不同底层工具不合并」被阁下否决——github-private-repo-extraction 最终并入 github-ops
+- **教训：** 「不同底层工具不合并」被用户否决——github-private-repo-extraction 最终并入 github-ops
 - **教训：** absorbed_into 只记元数据不搬文件，脚本要手动拷贝
 
 ## 2026-08-06 · 第四轮：全库 SKILL.md 总入口化
 
-- **原则（阁下拍板）：** SKILL.md 为总入口，里面的内容（含已写好的说明 md）能拆就拆
+- **原则（用户拍板）：** SKILL.md 为总入口，里面的内容（含已写好的说明 md）能拆就拆
 - 21 个厚 SKILL.md（95-240 行）→ 12 个拆薄 + 9 个判定合理保留
 - 判定标准：**主场景高频内容留 SKILL.md（每次都要读的），子场景细节拆 references/（用到才读的）**；数据索引/题库/导视表不算内容，保留
 - 拆分 12 个：image-batch-archive / news-verification / bilibili-api-ops / chinese-convention-search / credential-management / api-ecosystem-research / api-diagnostics / morning-briefing-audio / quick-fact-check / chara-profile / douyin / typhoon-monitor
@@ -188,7 +188,7 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 
 ## 2026-09-22 · 写作项目 减法（「规矩留、案例搬」第二轮）
 
-- **背景**：SKILL.md 25KB／p0-core 33KB，章节编号自己乱了（走到「五、六」又跳回「四·九/十/十一」），同一批判据在多处各写一版。阁下拍 **A 档**（判据＋阁下原话全留，血账／实测／session 实录搬独立案例档）。
+- **背景**：SKILL.md 25KB／p0-core 33KB，章节编号自己乱了（走到「五、六」又跳回「四·九/十/十一」），同一批判据在多处各写一版。用户拍 **A 档**（判据＋用户原话全留，血账／实测／session 实录搬独立案例档）。
 - **体积**：原有 11 份 135KB → **87KB（−36%）**；SKILL.md 25.4→12.2KB（−52%）；revision-workflow 9.7→2.5KB（−74%）；polish 13.3→4.2KB（−69%）；wings 6.6→1.5KB（−78%）；p1 8.9→7.0KB；p0-notes 14.0→10.7KB；vices 11.9→9.1KB；three-flows 5.6→3.7KB；p0-core 33.4→29.0KB。
 - **新档 7 份**：`tools.md`（工具手册）／`archive-state.md`（存档·沿革·判例）／`p0-core-cases.md`（血账）／`seven-layer-enrichment.md`／`title-naming.md`／`outlines/drafts/14|16-候选与过程.md`。
 - **抓手是「去重」不是「压字」**：四条硬红线在 p0-core／p1／three-flows／tools 各一份 → 归 p0-core §四·八；字数口径三处 → 归 p1 §五；弊端检查表两处 → 归 p1 §二；「加厚＝加事件」三处 → 归 p0-core §四·五。
@@ -198,7 +198,7 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 
 ### 2026-09-26 · 写作项目 第二轮（搬运 + 拆分）
 
-- **背景**：写完短篇 `20` 后阁下点「整理下 skill，做减法和拆分」。库体 556K，其中 `references/outlines/` 占 268K——**已发布篇的大纲只剩存档价值**（INDEX 自己写的口径），却一直躺在技能库里。
+- **背景**：写完短篇 `20` 后用户点「整理下 skill，做减法和拆分」。库体 556K，其中 `references/outlines/` 占 268K——**已发布篇的大纲只剩存档价值**（INDEX 自己写的口径），却一直躺在技能库里。
 - **减法**：`01`–`16`＋两封特别篇的**大纲 18 份搬出技能库** → `workspace/records/莉娅短篇-大纲归档/`（每份加一行归档题头）；outlines 只剩 `17`–`20`＋INDEX＋`drafts/`。**268K → ~60K**。
 - **拆分**：`p0-core.md` 332 行 → **158 行**——① §四·八/九/十/十一（形态与标点四节）成新档 `form-rules.md`；② §四·五/六（字数纪律与四条老毛病）**并入** `p1-review-checklist.md`（文末，带 marker）。**节号不重编号**（判例锚点：`scripts/story.py` 10+ 处、跨 skill 引用都按节号定位）——所以引用改成「新落点 + 原节号」：`p0-core §四·八` → `form-rules §四·八`、`p0-core §四·六` → `p1 §四·六`。
 - **锚点同步**：`scripts/story.py` 运行时文案 9 处、`原创连载档案` 一处，全库 grep 后逐处改。

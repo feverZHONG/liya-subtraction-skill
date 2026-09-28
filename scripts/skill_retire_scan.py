@@ -12,7 +12,7 @@
     - 表只给**事实**，「该不该出库」要过 references/growth-gate.md 的四条资产判据
       （档案库／内容型／勿忘类／季节性 一律保留，零调用 ≠ 无用）。
     - **零调用且创建不满 30 天**的（新 skill 还没轮到触发场景）不算候选，脚本会单独分组。
-    - 候选清单**只交给阁下裁**，本工具不做任何删除动作。
+    - 候选清单**只交给用户裁**，本工具不做任何删除动作。
 """
 import argparse
 import json
@@ -103,7 +103,7 @@ def main():
     print(f"\n候选合计 {len(cand)} 个（≥{a.days} 天没动）。")
     if fresh:
         print(f"另：零调用但创建不满 30 天的 {len(fresh)} 个（新 skill，不算候选）：" + "、".join(r["skill"] for r in fresh))
-    print("\n⚠️ 这张表只给事实——出库前过 references/growth-gate.md 的四条资产判据，候选清单交阁下裁。")
+    print("\n⚠️ 这张表只给事实——出库前过 references/growth-gate.md 的四条资产判据，候选清单交用户裁。")
     return 0
 
 

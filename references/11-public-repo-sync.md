@@ -4,7 +4,7 @@
 
 | 位置 | 角色 | 谁跟踪 |
 |:-----|:-----|:-------|
-| `/opt/data/skills/<name>` | 本天使随时调用的**原件** | NAS 私有库（Liya-NAS-Hermes） |
+| `/opt/data/skills/<name>` | 随时调用的**原件** | NAS 私有库（Liya-NAS-Hermes） |
 | `/opt/data/repos/<repo>` | **公开仓库工作副本** | 自己的 git，远程 = GitHub |
 
 注册表：`config/skill-repos.json`（一 skill 一行，`extra` 挂配套文件）
@@ -48,7 +48,7 @@
 
 ## 配套文件（extra）——跟仓库走、但不属于本 skill 的文档
 
-用途：某篇文档要随仓库分发、却不属于该 skill（例：阁下 B站《角色设定写作模板 v1.2》挂在 persona 仓库里，
+用途：某篇文档要随仓库分发、却不属于该 skill（例：用户 B站《角色设定写作模板 v1.2》挂在 persona 仓库里，
 源文件却是 sillytavern-cards 的 reference）。
 
 - 本地源 = 某个 skill 里的文件；仓库侧 = 仓库里的某个路径
@@ -63,7 +63,7 @@
 3. `bin/skillrepo <name> diff` → 看具体改了什么
 4. `bin/skillrepo <name> sync` → 落到本地原件
 
-## 建仓前先做「同名邻居体检」（2026-09-18 阁下点出来）
+## 建仓前先做「同名邻居体检」（2026-09-18 点出来）
 
 改名前 / 建仓前，先把**名字跟它像的**扫一遍——只看「活着的 skill」会漏掉三类：
 
