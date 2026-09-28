@@ -44,7 +44,7 @@
 - **冲突不自动选边**：两边改了同一处 → `sync` 停下、exit 3、冲突标记留在副本里等人看，`resolve` 才收尾
 - **推送失败不回退 tag**：提交留在本地，`status` 如实显示「领先 N 个提交（待推）」，下次 `sync` 自动补推
 - **同步前自动备份** 本地原件到 `cache/skillrepo-backup/<name>/`（滚动留 5 份）
-- **仓库专属文件** README.md / LICENSE / .gitignore 只活在仓库，不回灌本地 skill 目录
+- **仓库专属文件** README.md / LICENSE / LICENSE-DOCS / .gitignore 只活在仓库，不回灌本地 skill 目录
 
 ## 配套文件（extra）——跟仓库走、但不属于本 skill 的文档
 
@@ -110,3 +110,5 @@ python3 scripts/test_skillrepo_extras.py   # 配套文件：基线/推/拉/冲�
    cd /opt/data/repos/<repo> && /opt/data/bin/gitpush --channel api   # 直连不通时走 API 重放
    ```
    回读核实**不靠 git 自己**（它连不上）：`api.github.com` 的 `commits/main` 拿 sha、`contents/<路径>?ref=main` 拿 base64 内容对一眼（公开仓免 token）。
+7. **新增「仓库专属文件」必须同步改 `curation_sync.py` 的 `REPO_ONLY`（2026-09-28 实踩）**：许可改双份时加了 `LICENSE-DOCS`，文档清单改了、代码没跟 → 副本里这份被当成「本地没有的文件」，**下次任意一仓 `sync` 都会把它删掉**——12 仓的双许可会一起失效，而且删的是已推送的许可文件。症状极隐蔽：`status` 的「本地 ↔ 副本」差异里只有一行 `-LICENSE-DOCS`，看着像正常提示（实测当时 11 个仓全都有这行）。
+   判据：**往仓库加任何「只活仓库」的文件，改完立刻 `grep -n REPO_ONLY scripts/curation_sync.py` 核一遍，并按规矩跑两套沙盒**（`test_skillrepo_sync.py` ＋ `test_skillrepo_extras.py`）。`status` 里出现 `-<文件名>` 而本地确实不该有它 = 漏登记，先修再 sync。
