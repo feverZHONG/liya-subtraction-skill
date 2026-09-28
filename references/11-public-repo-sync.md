@@ -21,6 +21,7 @@
 | `sea-turtle-soup` | [liya-sea-turtle-soup](https://github.com/feverZHONG/liya-sea-turtle-soup) |
 | `delegation-and-verification` | [liya-delegation-and-verification](https://github.com/feverZHONG/liya-delegation-and-verification) |
 | `tavern-card-refinement` | [liya-tavern-card-refinement](https://github.com/feverZHONG/liya-tavern-card-refinement) |
+| `prose-quality-metrics` | [liya-prose-quality-metrics](https://github.com/feverZHONG/liya-prose-quality-metrics) |
 
 （权威名单看 `bin/skillrepo list`；本表是给人看的对照。）
 

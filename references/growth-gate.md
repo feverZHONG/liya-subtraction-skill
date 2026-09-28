@@ -31,8 +31,8 @@ python3 skills/skill-curation/scripts/skill_retire_scan.py --days 60
 
 | 类 | 说明 | 例 |
 |:--|:--|:--|
-| **档案库／资料库** | 数据资产，触发了才读 references | （私档）-archive、（私档）-archive、enneagram-notes |
-| **内容型** | 笔记、数值库、原创连载 | video-editing-course、gbf-relink、（私档）-crusaders |
+| **档案库／资料库** | 数据资产，触发了才读 references | 作品档案、小说资料、笔记库这类（都属私人资料库，不在公开仓） |
+| **内容型** | 笔记、数值库、原创连载 | video-editing-course、gbf-relink、原创连载档案 |
 | **勿忘类** | 存在价值不是「常被调用」，是不该被忘掉 | history-archive（阁下：「勿忘历史」） |
 | **季节性** | 一年只用几个月 | typhoon-monitor、chinese-convention-search |
 | **工具手册（带脚本）** | 删了工具就没入口，下次还得重写 | debug、douyin、nga-extractor |
