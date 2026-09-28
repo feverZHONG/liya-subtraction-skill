@@ -20,6 +20,7 @@
 | `spy-game` | [liya-spy-game](https://github.com/feverZHONG/liya-spy-game) |
 | `sea-turtle-soup` | [liya-sea-turtle-soup](https://github.com/feverZHONG/liya-sea-turtle-soup) |
 | `delegation-and-verification` | [liya-delegation-and-verification](https://github.com/feverZHONG/liya-delegation-and-verification) |
+| `tavern-card-refinement` | [liya-tavern-card-refinement](https://github.com/feverZHONG/liya-tavern-card-refinement) |
 
 （权威名单看 `bin/skillrepo list`；本表是给人看的对照。）
 
