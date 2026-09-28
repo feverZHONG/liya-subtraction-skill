@@ -24,7 +24,9 @@ def main():
     if "--top" in argv:
         top_n = int(argv[argv.index("--top") + 1])
 
-    dirs = sorted(d for d in root.iterdir() if d.is_dir())
+    # 点开头的目录不是技能：.archive（归档区）/ .curator_backups（备份）/ .hub（Hermes 索引缓存）
+    # 2026-09-28 修：早先把这三个报成「空壳目录」，每轮审计都要人工排除一次。
+    dirs = sorted(d for d in root.iterdir() if d.is_dir() and not d.name.startswith("."))
     with_md = [d for d in dirs if (d / "SKILL.md").exists()]
     shells = [d for d in dirs if not (d / "SKILL.md").exists()]
     print(f"目录总数: {len(dirs)}  活跃 skill: {len(with_md)}  空壳: {len(shells)}")

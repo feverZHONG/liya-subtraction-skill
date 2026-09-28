@@ -7,6 +7,26 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 > 历史 audit 合并归档（2026-08-06 三合一）。保留每个日期的核心决策与教训，细节压缩。
 > 用途：做减法时先翻历史——「这个为什么删/合并过」避免重复思考或推翻旧决策。
 
+## 2026-09-28 · 第十七轮：三件合并 + 一件并入 + 一件拆薄（阁下「逐个处理」）
+
+- 触发：阁下「检查一下手上的 skill，看看有哪些是不常用的、可以合并的、可以做减法的、顺带可以拆分的」→ 出体检报告（`workspace/records/2026-09-28-skill库体检报告.md`：107 个 / 唯一 ≥60 天零调用是 `debug` / 42MB 是四个档案库）→ 阁下「应该可以逐个处理了」。
+- **三件合并（每件都先重核原文，没照报告的印象动手）**：
+  - `brief-convergence` → `option-set-authoring`：两边各写一遍同一批判据（同族／同质／归零／撞已用），归并成宿主 §一「四道自检」（新增「撞已用」＋血账），独有内容（三个拆动作／迭代纪律／收尾／不做什么）逐字搬 `references/brief-convergence.md`。
+  - `galgame-text-archive` → `paper2gal`：**实测是同一件事存两份**——paper2gal 的 `references/galgame-guide.md` 早把整条流程写全（编码→块识别→切分→索引→导读，连踩坑都重合）。只把独有部分（视角切换识别／素材交接／信息源铁律／切分校验命令／符号自查）逐字补进该档 §六–§十，**不新建第二档**。
+  - `mediawiki-site-harvesting` → `archive-library-ops`：整档成其 `references/mediawiki-site-harvesting.md`（API 取数路径：页面类型分叉／SMW `ask`／`raw`／EdgeOne 风控），并在 `batch-harvest-workflow.md` 同主题处加指针防两版。
+- **一件并入而非降级**：`debug`（唯一 ≥60 天零调用）。**报告原判「与 `dev-workflow/references/debug.md` 双份」是误判**（`skill-publishing/references/rework-plan.md` 里那句也是）：那份是**方法论**（四阶段），skill 里是 **14 份工具手册**（pdb／debugpy／CDP／heap snapshot）——互补不重复，按 growth-gate 第一问并入 `dev-workflow`（手册 `git mv` → `references/debug-tools/`，速查表与清单并入其 `debug.md`）。
+- **一件拆薄**：`tieba-extractor` 187 行／17.0KB → **81 行／5.8KB**（mdcheck「⚠️ 考虑拆」→ 0 提示），三个 refs 共 12.4KB。守恒：原文 96 条长行 **0 缺失**；两个被外部引用的节名（「撞墙真因」「长帖全量抓取」）与全部脚本路径原样保留，只改了两处外部指向。
+- **暂缓一件**：`subtitle-proofreading`（150 行）——查重发现**并行会话正在动它**（SKILL.md 当日 10:45 刚改、`scripts/asr_export_parse.py` 未提交），按「同日撞过车」纪律让路，留待其落地后再拆。
+- **数字**：磁盘 **107 → 103**；台账四件标 `archived`（note 写明去处）／0 幽灵 0 漏登；mdcheck 八件对基线**均不欠账**（（私档） 表面 +28 条，查实是 `.gitignore:266` 排除的本地「落档预览」，与本轮无关）；audit 空壳 3 → **0**。
+- **两个工具坑（都已修）**：① `skill_thin.py` 的 `section_end` 把**代码围栏里的 `#` 注释当标题**——「长帖全量抓取」62 行的节只搬出 7 行／133 字符，差一点静默丢内容（逐条校验因为「搬走的确实进了 ref」而全绿，**只有干跑报告里的 ref 体积露头**）。② `git mv` 搬空一个 skill 的 `references/` 后**空目录残骸留在磁盘**（git 不管空目录），`ls -d skills/*/` 计数多一个、下次 audit 当空壳报——`git rm -r` 之后要补 `rmdir`。
+- **教训**：**报告要写在实测之后**——本轮体检报告里 A2 的判据细节，当时那次读原文的工具调用中断、输出没回来，是照印象写的；动手前重读全文才核出「不是双份、是互补」这类反转。**凡合并／降级的判据，动手那一刻必须重新落地一遍。**
+- **同日第二轮（C 组拆薄）**：`tavern-card-refinement` 296→113 行（47.6→11.3KB，五节搬出，「槽位归位」并入既有 `slot-mechanics.md`）｜`subtitle-proofreading` 150→76 行（按模式搬四档，正文留分流表）｜`bili-video-content` 186→146 行（PGC 线／录屏取证线并入既有 `advanced-extraction.md`）｜`（私档）-tishici` 178→139 行｜`wufan-forum` 161→153 行（顺手修两个「八」重号）。**`rimworld-text-archive` 判定不动**：242 行里大半是 `N1/F12/S3` 标号索引行，字符仅 6.8K——**行数虚高**，硬拆会拆散锚点。
+- **口径修正**：C 组清单原按**行数**排（audit TOP12 也是行数）——按 09-26 的「三个尺度」复核，`rimworld`/`（私档）`/`wufan` 都是行数虚高（表格与清单撑的）。**排序看字符数，不看行数。**
+- **第五个工具坑（已修）**：残留校验原用「原行尾部 25 字」当指纹，**跨节重复的长行必然假报**（bili 二b 的 yt-dlp 行尾与 §二 三条 curl 行尾同片段，整节搬被误判「原文还在」）→ 改**整行比对 ＋ 剔掉 keep 文本**。
+- **本轮工具产出：`bin/sk`（技能库统一入口）**——本轮体检/拆薄的四个动作原先都是手写临时脚本（跑完即弃、下轮要重写），按「库脚本过两个就得有统一入口」收成一个 CLI：`stats`（全库一览，**排序看字符数不看行数**）｜`skeleton`（章节骨架，先判展开型 vs 清单型再决定搬不搬）｜`verify`（拆薄收尾验收：守恒复核 ＋ mdcheck 对基线，**核对不了也算不过**）｜`refs`（双向引用分布）；另转发 `audit`／`retire`／`thin`。当天实测：`sk stats` 立刻揪出 `delegation-and-verification`（15224 字符）是**全库最肥的 SKILL.md**——行数排只到第 9，此前一直被掩盖。
+- **数字**：六件 mdcheck 对基线全不欠账；守恒逐件（194／94／85／108／108 条长行）**0 缺失**；按节名引用改指 5 处。**并行会话纪律实战**：`subtitle-proofreading` 当日 10:45 被另一会话改过，先让路、确认 27 分钟无写入后才动手（只碰 SKILL.md，不碰对方未提交的 `scripts/asr_export_parse.py`）。
+
+
 ## 2026-09-26 · 第十六轮：立「进出门」（阁下问「有必要整 109 个 skill」之后）
 
 - 阁下 02:57 问「在想着有必要整 109 个 skill？」→ **先摆事实再答**：107/109 真被调用过（零调用的 2 个是本周新建）、预载索引 **7049 字符 description／轮**（≈每轮会话固定付的税）、51MB 里 **42MB 是四个档案库**（数据资产，references 不预载）。

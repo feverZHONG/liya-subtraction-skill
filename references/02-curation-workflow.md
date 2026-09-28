@@ -90,4 +90,13 @@ ls /opt/data/skills/*/SKILL.md | wc -l       # 确认无残留
 grep -q "temp/" .gitignore && echo "已忽略" || echo "需添加 temp/ 到 .gitignore"
 ```
 
+**删除必须提交进索引（2026-09-27 踩）**——移档／删 skill 只动磁盘不够，`git ls-files` 还列着旧路径，而每日文字存档（`scripts/backup_text.py`）正是按 `git ls-files` 取文件的：索引脏 → 整包失败，当天备份全废。收尾跑这两条：
+
+```bash
+git rm -r --cached --quiet skills/<被移走的>   # 或 git add -A -- skills/<路径>
+git ls-files -z | python3 -c "import sys,os;fs=[f for f in sys.stdin.buffer.read().decode().split('\0') if f];print([f for f in fs if not os.path.exists(f)])"   # 应输出 []
+```
+
+顺带：`skills/.archive/` 在 `.gitignore` 里，但 `scripts/backup_text.py` 已**显式收录**该目录（2026-09-27 起）——归档掉的 skill 正文照样进每日文字包，删过的东西不会变成不可恢复。
+
 **cron 脚本审计：** 清理涉及 cron 技能的合并后，审计现有 cron job 的输出合规——已在跑的 cron 脚本不会自动遵守新规则。

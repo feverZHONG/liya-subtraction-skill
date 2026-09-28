@@ -57,10 +57,19 @@ def find_heading(lines, heading):
 
 def section_end(lines, start):
     """节尾 = 下一个**同级或更高级**的标题（`###` 节不会被 `##` 兄弟节吞掉）。
-    2026-09-25 修：早先只认 `## `，对 `###` 子节会一路吞到父节末尾。"""
+    2026-09-25 修：早先只认 `## `，对 `###` 子节会一路吞到父节末尾。
+    2026-09-28 修：**代码围栏内的 `#` 不是标题**——早先撞上 ` ```bash ` 里的
+    `# ── 路线 A` 会把节尾判在那种注释行上（实测 tieba-extractor「长帖全量抓取」
+    62 行的节只搬出 7 行 / 133 字符）。"""
     lvl = len(lines[start]) - len(lines[start].lstrip("#"))
+    in_code = False
     for i in range(start + 1, len(lines)):
         s = lines[i]
+        if s.lstrip().startswith("```"):
+            in_code = not in_code
+            continue
+        if in_code:
+            continue
         if s.startswith("#"):
             n = len(s) - len(s.lstrip("#"))
             if n <= lvl and len(s) > n and s[n] == " ":
@@ -99,12 +108,13 @@ def main():
     keeps = []        # keep 文本
 
     def probe_of(text):
-        """指纹取**原文尾部** 25 字：keep 行总是比原文短，正文里不该再出现原尾。
-        短行（<25 字）不作指纹——```` ```bash ````、表格分隔行这类格式行必然与保留节撞车（假残留）。"""
+        """指纹＝**整行**（≥25 字）。
+        2026-09-28 改：早先取「原文尾部 25 字」——对**跨节重复的长行必然假报**
+        （实测 bili-video-content 二b 的 yt-dlp 行尾与 §二 三条 curl 行尾同为
+        `.bilibili.com/video/<BV>"`，整节搬被误判成「原文还在 SKILL.md」）。
+        短行（<25 字）仍不作指纹——格式行必然与保留节撞车。"""
         t = text.strip()
-        if len(t) < 25:
-            return None
-        return t[-25:] if len(t) > 45 else t
+        return t if len(t) >= 25 else None
 
     def detail_probe(orig, keep):
         """真正被搬走的那段细节 = 原文里最长的一个「不在 keep 里」的 12 字窗口。
@@ -220,9 +230,15 @@ def main():
             ref_texts[rel] = head + body
 
     # ④ 校验
+    # keep 文本是**正文里本来就该在的**（节标题、指针行）——先从残留检查范围里剔掉，
+    # 否则「保留原标题行做指针」会被判成残留（2026-09-28 实测 bili-video-content）。
     problems = []
+    reduced = new_text
+    for k in keeps:
+        if k and k.strip():
+            reduced = reduced.replace(k.strip(), "")
     for label, ref, orig, probe in moved:
-        if probe and probe in new_text:
+        if probe and probe in reduced:
             problems.append(f"[残留] {label} 的原文还在 SKILL.md：{probe[:20]}")
         if probe and probe not in ref_texts.get(ref, ""):
             problems.append(f"[丢失] {label} 的原文没进 {ref}：{probe[:20]}")

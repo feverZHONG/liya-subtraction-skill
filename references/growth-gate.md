@@ -53,6 +53,7 @@ python3 skills/skill-curation/scripts/skill_retire_scan.py --days 60
 5. **台账 `.usage.json` 标 `archived`**（note 写明并到哪儿，否则下轮 audit 当 ghost）；
 6. **下游索引同步**——发布候选表去行、表内数字列（skill-publishing 的 publish-candidates）、库内 INDEX／README 的指路行；
 7. **收尾四件**——布局扫（无嵌套）／跨 skill 相同长行／`bin/mdcheck` **对基线**（涨了就是欠账）／相对指涉复核（「见上／见下」搬完会失锚）。
+8. **顺手清空目录残骸**（2026-09-28 实测）——`git mv`／`git rm` 搬空一个 skill 的 `references/` 后，**空目录还留在磁盘上**（git 不管空目录）：`ls -d skills/*/` 会多算一个、下一轮 audit 当空壳报。搬完补一句 `rmdir`。
 
 最后记一笔 `pruning-history.md`（哪一轮、并了谁、数字、教训）。
 
