@@ -226,8 +226,12 @@ def cmd_refs(argv):
     d = os.path.join(SKILLS, name)
     print(f"=== 谁引用 {name}（改动它之前必查）===")
     r = subprocess.run(["grep", "-rn", name, "--include=*.md", "--include=*.py", "--include=*.sh",
-                        "--include=*.json", SKILLS, os.path.join(REPO, "bin")],
+                        "--include=*.json", "--exclude-dir=.*",
+                        SKILLS, os.path.join(REPO, "bin")],
                        capture_output=True, text=True)
+    # --exclude-dir=.* ：点开头目录（.hub/.archive/.curator_backups）不是技能，
+    # 实测漏了这条会把 .hub/index-cache 那份十万条索引（49MB）整个吃进来，
+    # 输出近五千万字符、还白占内存——本文件开头的「一律跳过」约定必须落到每条 grep 上。
     hits = [l for l in r.stdout.split("\n")
             if l and not l.startswith(d + os.sep) and ".usage.json" not in l]
     if not hits:
