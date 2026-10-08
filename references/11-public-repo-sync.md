@@ -32,7 +32,11 @@
 | 命令 | 干什么 |
 |:-----|:-------|
 | `skillrepo list` | 看注册了哪些 skill↔仓库对 |
+| `skillrepo status-all [--jobs N]` | **批量**：所有仓三方状态（并行 8 路，18 户 ~4 秒），按危险度排序，末尾直接给出「要同步的 N 户 + 命令」 |
+| `skillrepo sync-all [--jobs N]` | **批量**：有增量的仓一起同步（并行 4 路——回灌时 NAS 私有库会抢锁；失败自动串行重试一轮） |
+| `skillrepo new <skill> [--repo X] [--dry-run] [--existing]` | **建仓配方**：脱敏闸 → 建仓 → 复制 → 落仓库专属文件 → 推送 → 登记注册表 |
 | `skillrepo <name> status` | 三方状态只读：本地↔副本 / 副本↔远程 / 远程自上次同步以来 / 本地自上次同步 / 配套文件 |
+| `skillrepo <name> status --json` | 机器可读快照（批量与脚本吃这个，别再解析人读文本） |
 | `skillrepo <name> sync` | 本地改动 → 提交 → 与远程三方合并 → 推送 → 回灌本地（NAS 私有库同时登记） |
 | `skillrepo <name> resolve` | 冲突处理完的收尾：提交合并 → 推送 → 回灌 |
 | `skillrepo <name> abort` | 退回冲突前（本地原件一个字节不动） |
@@ -79,6 +83,15 @@ grep -rn '<skill名>' skills scripts bin cron   # 谁按旧名引用着它（改
 
 ## 新增一对仓库（配方）
 
+**一条命令**：`bin/skillrepo new <skill> --desc "仓库一句话简介"`（仓名默认 `liya-<skill>`，要改用 `--repo`）。
+先 `--dry-run` 看一眼会建什么（只跑脱敏闸与命名检查，什么都不动）。
+
+它做完下面 1–6 步，并且把**「先脱敏」做成了闸**——硬命中直接拦下，要带着出门得显式 `--force`（逼人先想清楚）。
+
+**它不做、要人补的收尾三步**：README 正文改写（标题/用法按该 skill 重写）、**每个老仓**的姊妹段加它（互列不留断链）、仓库 description 与 topics 过一遍；最后 `bin/repo-verify <skill>` 回读验收。
+
+手工兜底（`new` 用不了时）：
+
 1. GitHub 建仓：public、`main`、空仓（API 建仓可能回 500/502 但其实建成了——建完 GET 一次确认）
 2. **先脱敏，再复制**（无仓库的那份 skill 是最容易忘的——它一直在私有库里裸着）：扫项目名 / 角色名 / 本机路径（`/opt/data`、`workspace/`）/ 对「阁下」的称呼；例子里的专有名词换中性示例（`my-world.json`、`示例键`），**机制与实测数字一字不动**。判据：`grep -rn "项目名\|/opt/data\|workspace/" skills/<name>/` 无输出
 3. 复制 skill → `/opt/data/repos/<repo>`，补 README.md / LICENSE / .gitignore（这三个是仓库专属，双向都绕开）
@@ -89,14 +102,16 @@ grep -rn '<skill名>' skills scripts bin cron   # 谁按旧名引用着它（改
 
 ## 维护
 
-改完同步 CLI（`scripts/curation_sync.py`）**必须跑两个沙盒**（file:// 远程，不碰网络也不碰真仓库）：
+改完同步 CLI（`scripts/curation_sync.py`）**必须跑三套沙盒**（file:// 远程，不碰网络也不碰真仓库）：
 
 ```bash
 python3 scripts/test_skillrepo_sync.py      # 基线/推/拉/自动合并/冲突保护/resolve/abort/删除跟随
 python3 scripts/test_skillrepo_extras.py   # 配套文件：基线/推/拉/冲突保护/人工对齐后放行
+python3 scripts/test_skillrepo_batch.py    # 批量 status-all/sync-all、status --json、new 的前置闸
 ```
 
-两套都过再收工——2026-09-13 建仓当天，就是配套文件那套沙盒揪出了「分歧判据看错对象」的真 bug。
+三套都过再收工——2026-09-13 建仓当天，就是配套文件那套沙盒揪出了「分歧判据看错对象」的真 bug；
+2026-10-08 批量那套又提前暴露了两个真问题（`new` 的注册表检查顺序、以及沙盒带真 token 会建真仓）。
 
 ## 踩坑
 
@@ -112,3 +127,6 @@ python3 scripts/test_skillrepo_extras.py   # 配套文件：基线/推/拉/冲�
    回读核实**不靠 git 自己**（它连不上）：`api.github.com` 的 `commits/main` 拿 sha、`contents/<路径>?ref=main` 拿 base64 内容对一眼（公开仓免 token）。
 7. **新增「仓库专属文件」必须同步改 `curation_sync.py` 的 `REPO_ONLY`（2026-09-28 实踩）**：许可改双份时加了 `LICENSE-DOCS`，文档清单改了、代码没跟 → 副本里这份被当成「本地没有的文件」，**下次任意一仓 `sync` 都会把它删掉**——12 仓的双许可会一起失效，而且删的是已推送的许可文件。症状极隐蔽：`status` 的「本地 ↔ 副本」差异里只有一行 `-LICENSE-DOCS`，看着像正常提示（实测当时 11 个仓全都有这行）。
    判据：**往仓库加任何「只活仓库」的文件，改完立刻 `grep -n REPO_ONLY scripts/curation_sync.py` 核一遍，并按规矩跑两套沙盒**（`test_skillrepo_sync.py` ＋ `test_skillrepo_extras.py`）。`status` 里出现 `-<文件名>` 而本地确实不该有它 = 漏登记，先修再 sync。
+8. **建仓权限：fine-grained PAT 建 public 可以，建 private 会被拒（403）**（2026-10-08 实测）——当时拿一次 `private:true` 的探针失败，就归纳成「token 没有建仓权限」，转而准备让用户在网页手工建仓；后来一次误触的 `new --force` 真的把仓建出来了，才回头做**参数对照**：同一端点只换 `private` 一个值各跑一次 → `false` 返回 201、`true` 返回 403。**判据要经参数对照才算实证**（这条在 `dev-workflow` 里已经写着，本次是它自己的又一个实例）。同一把 token 删仓可用（`DELETE /repos/{owner}/{repo}` 实测 204）。
+9. **沙盒测试绝不能带真凭据——试运行会变成真操作**（2026-10-08 实测事故）：批量沙盒脚本第一版没清 `GITHUB_TOKEN`（真值从环境继承），测 `new --force` 那条路时**真的在 GitHub 上建了公开仓、提交并推送了内容**（当场删除 + 复查 404 + 仓数回到基线，推上去的只有占位内容）。
+   规矩两条：① 沙盒里跑任何 `new`／发布类命令前，把 `GITHUB_TOKEN` 覆盖成假值（写进测试脚本本身，不靠记性）——**file:// 远程那一套只护得住 git 那半边，API 那半边照样通到真站点**；② 断言要钉在「闸有没有拦住、流程停在哪一步」，别拿「输出了某句提示」当通过（第一版测试就因此把「闸拦下」和「走完了全程」看成差不多）。
