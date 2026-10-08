@@ -90,12 +90,14 @@ ls /opt/data/skills/*/SKILL.md | wc -l       # 确认无残留
 grep -q "temp/" .gitignore && echo "已忽略" || echo "需添加 temp/ 到 .gitignore"
 ```
 
-**删除必须提交进索引（2026-09-27 踩）**——移档／删 skill 只动磁盘不够，`git ls-files` 还列着旧路径，而每日文字存档（`scripts/backup_text.py`）正是按 `git ls-files` 取文件的：索引脏 → 整包失败，当天备份全废。收尾跑这两条：
+**删除必须提交进索引（2026-09-27 踩）**——移档／删 skill 只动磁盘不够，`git ls-files` 还列着旧路径，而每日文字存档（`scripts/backup_text.py`）正是按 `git ls-files` 取文件的：索引脏 → 整包失败，当天备份全废。**收尾一条命令（2026-10-04 起）：**
 
 ```bash
-git rm -r --cached --quiet skills/<被移走的>   # 或 git add -A -- skills/<路径>
-git ls-files -z | python3 -c "import sys,os;fs=[f for f in sys.stdin.buffer.read().decode().split('\0') if f];print([f for f in fs if not os.path.exists(f)])"   # 应输出 []
+bin/tidy index            # 查：跟踪文件缺失 + 断头软链；退出码 0 干净 / 1 有脏
+bin/tidy index --fix      # 修：对「已删的普通文件」就地补 stage 删除（软链断头只报，要重新指路）
 ```
+
+判据仍是「`git ls-files` 与磁盘逐条对得上」，`--fix` 之后照样 `git commit` + `bin/gitpush`。旧写法（`git rm -r --cached …` + 内联 python 复查）已收进 `bin/tidy index`，不必再手敲。
 
 顺带：`skills/.archive/` 在 `.gitignore` 里，但 `scripts/backup_text.py` 已**显式收录**该目录（2026-09-27 起）——归档掉的 skill 正文照样进每日文字包，删过的东西不会变成不可恢复。
 
