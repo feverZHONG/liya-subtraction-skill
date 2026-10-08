@@ -35,6 +35,7 @@
 | `skillrepo status-all [--jobs N]` | **批量**：所有仓三方状态（并行 8 路，18 户 ~4 秒），按危险度排序，末尾直接给出「要同步的 N 户 + 命令」 |
 | `skillrepo sync-all [--jobs N]` | **批量**：有增量的仓一起同步（并行 4 路——回灌时 NAS 私有库会抢锁；失败自动串行重试一轮） |
 | `skillrepo new <skill> [--repo X] [--dry-run] [--existing]` | **建仓配方**：脱敏闸 → 建仓 → 复制 → 落仓库专属文件 → 推送 → 登记注册表 |
+| `skillrepo siblings [--dry-run] [名…]` | **姊妹段互列**：给各仓 README 的「姊妹仓库」段补上缺的仓（带说明，取自 `config/repo-blurbs.json`），逐仓提交推送——新仓发布后跑一次，一条命令替掉手改十几次 README |
 | `skillrepo <name> status` | 三方状态只读：本地↔副本 / 副本↔远程 / 远程自上次同步以来 / 本地自上次同步 / 配套文件 |
 | `skillrepo <name> status --json` | 机器可读快照（批量与脚本吃这个，别再解析人读文本） |
 | `skillrepo <name> sync` | 本地改动 → 提交 → 与远程三方合并 → 推送 → 回灌本地（NAS 私有库同时登记） |
