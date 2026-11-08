@@ -40,6 +40,28 @@ python3 skills/skill-curation/scripts/skill_retire_scan.py --days 60
 **真候选** ＝ 连续 60 天零调用 **且** 不在上表五类 **且** 内容已被别处覆盖（判「覆盖」用判据指纹，见下节）。
 **候选清单只交给用户垂裁**——本流程不做自动删除；降级选项优先于删除（脚本/git mv 到 `workspace/scripts/`，经验压进 `workspace/memory/*-experience.md`）。
 
+> **2026-10-11 补**：Hermes 自带 curator 曾用纯闲置时间自动归档（30d）违背这条口径（9 次，含五类里的 `typhoon-monitor` / `chinese-convention-search`）——已 `curator.archive_after_days=3650` 关掉自动归档，归档改人工执行。细则见 `../SKILL.md`「并行写入防撞」节与 `workspace/records/2026-10-11-curator保护扫描.md`。
+
+## 二·五、出库前的第一刀：孤儿档扫描（2026-10-18 加）
+
+季度对账看的是「skill 有没有被调用」，看不到「skill 内部的 references 有没有人读」。**两个尺度都要量**，否则减法会变成删库。
+
+```bash
+python3 skills/skill-curation/scripts/skill_audit.py --orphans
+# 输出：references md 总数 / 0 入链 / 1-2 入链 / 3+ 入链，按 skill 汇总孤儿数
+#      带 [有 scripts/] 的 skill 先查是不是 CLI 数据在读，别当死库存
+```
+
+**判读（2026-10-18 实测：1378 个 references md，0 入链 521）**：
+
+- **429 / 521 落在三个资料库**（ruozhiba 题库 157／enneagram 142／gbf 130）——题库与 CLI 数据本来就不靠 md 引用，属 growth-gate 的「档案库／内容型」保留类。
+- 扣掉这些之后 **≈92 个是候选**——2026-10-18 逐个判完：**26 个其实在用**（见下条非 md 引用核查）、**7 个一次性产物**（清理实录、采集案例）、**59 个有货没门**（手册写好了但 SKILL.md 没给入口，补一行指针就活）。
+- 判据顺序：**有没有 scripts/ 读它 → 是不是内容型资料 → 是不是一次性产物 → 剩下才是减法候选**。
+
+**⚠️ 还要叠一层「非 md 引用核查」（2026-10-18 实测，26/92 靠这层救回）**：md 入链 0 ≠ 没人读。SKILL.md 正文里的**路径模式约定**（`references/daily-brief-` 后接日期的写法，cron 按模式生成）、cron 配置里写死的文件名、脚本里的 `glob`——这些都不出现在反引号引用里。先查这三处再判降级；`daily-news-poster` 那 18 份日报就是这样：md 入链 0，但按约定路径每天被查，降了等于砍掉历史检索。
+
+**纪律**：降级（`git mv` 到 `workspace/records/refs-shelved/`）优先于删除；清单交用户过目，不自动删。
+
 ## 三、合并必同步（2026-09-26 立的规矩）
 
 > 原话：「**即便是方案一整合并，也要同步更新 skill 才行。**」

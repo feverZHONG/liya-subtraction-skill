@@ -77,7 +77,7 @@ tier: T1  # T分级: T2=直接做 / T1=先请示 / T0=一律拒
 
 - **禁止创建 monolithic references/full-reference.md** — 一个功能一个文件，不要全部 dump 进去。这是「换汤不换药」的反模式。
 - **每个 skill 至少一个 references/ 文件** — 0 个文件说明 SKILL.md 还不够薄。
-- **section 命名有意义** — 不叫 `ref1.md`，叫 `01-phase-1-root-cause.md`。
+- **section 命名有意义** — 不叫 「ref1.md」，叫 「01-phase-1-root-cause.md」。
 - **说明 md 也能拆** — 已经写好的 references 不算内容；SKILL.md 里内嵌的详细说明（流程/长规则/踩坑/模板/代码示例）才是要拆的对象（2026-08-06 全库验证）。
 
 ## 引用表格式
@@ -88,8 +88,8 @@ SKILL.md 的引用表统一用这个格式：
 | 你要查什么 | 打开 |
 |:-----------|:-----|
 | 核心概念 | `references/01-xxx.md` |
-| 详细操作 | `references/02-yyy.md` |
-| 踩坑记录 | `references/03-pitfalls.md` |
+| 详细操作 | 「references/02-yyy.md」 |
+| 踩坑记录 | `skills/sillytavern-cards/references/03-pitfalls.md` |
 ```
 
 ## 拆薄工具 · `scripts/skill_thin.py`（2026-09-22 立）
@@ -112,7 +112,7 @@ spec 字段：`skill_dir` / `ref_meta`（新 ref 的题头）／`section_moves`�
 - **auto_index 防「冒号太靠前」**：`- 平台：…` 会被第一个全角冒号切成孤零零的 `- 平台`——规则＝冒号位置 <30 不切，无冒号的超长条目用 `index_overrides` 手给一句话。
 - **节替换后补空行**：repl 末尾不补空行，会把下一个 `## ` 顶上来粘在指针行后面。
 - **ref 头 frontmatter 的 skill 名别硬编码**（2026-09-22 修）：早先写死「随某个主 skill」，拆别的 skill 时四个子代理都得自己 sed 一遍——现在由 `skill_dir` 推导。
-- **两种 ref 落法**（2026-09-22 加）：`ref_meta.<ref>.append=true` ＝**并入既有 ref**（原样保留 + 追加一节带 marker），用在「一个主题一档、不重复存两遍」的场合（例：`delegation-and-verification` §七 并入既有 `landing-review-findings.md`）；`moves[].keep=""` ＝该条整体搬走、正文不留占位（别留一堆空行）。
+- **两种 ref 落法**（2026-09-22 加）：`ref_meta.<ref>.append=true` ＝**并入既有 ref**（原样保留 + 追加一节带 marker），用在「一个主题一档、不重复存两遍」的场合（例：`delegation-and-verification` §七 并入既有 `skills/delegation-and-verification/references/landing-review-findings.md`）；`moves[].keep=""` ＝该条整体搬走、正文不留占位（别留一堆空行）。
 
 **换轴经验**（2026-09-22，`delegation-and-verification` 53.4KB → 15.8KB）：**先看每个「肥」在哪**——若条目已是一条判据一行、肥在**条目数**而非单条长度，那就不是「案例搬」，该**按场景切**（§一 任务书 / §三 验收 / §五 检索型 / §六 评审型 / §七 落地 / §八 外部评审 各成一档，高频的 §二 并行、§四 坑 原样留）。判据：随机抽 5 条，能砍掉一半字数的是「案例型」（搬），砍不动的是「判据型」（按场景整节搬）。
 

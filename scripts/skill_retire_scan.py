@@ -3,7 +3,7 @@
 """出库候选扫描 —— 技能库季度对账用，一条命令出「谁很久没被调用」的事实表。
 
 用法:
-    python3 skill_retire_scan.py [--days 60] [--root ~/.hermes/skills] [--json]
+    python3 skill_retire_scan.py [--days 60] [--root <数据根>/skills] [--json]
 
 输出（按「最后调用距今天数」降序）:
     skill | 最后调用 | 天数 | 次数 | 体积KB | 带脚本 | 状态(state)
@@ -21,8 +21,28 @@ import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+
+def _data_root():
+    """数据根探测（可迁移/可发布）：$HERMES_ROOT ＞ $SKILL_ROOT ＞ 脚本上溯 ＞ ~/.hermes ＞ 家目录。
+    命中判据：该层下存在 skills/ 目录。2026-10-16 解耦（原为写死路径）。"""
+    for _env in ("HERMES_ROOT", "SKILL_ROOT"):
+        _v = os.environ.get(_env)
+        if _v and os.path.isdir(os.path.join(_v, "skills")):
+            return _v
+    _here = os.path.dirname(os.path.abspath(__file__))
+    _cands = [os.path.abspath(os.path.join(_here, *([".."] * _n))) for _n in range(1, 5)]
+    _cands += [os.path.expanduser("~/.hermes"), os.path.expanduser("~")]
+    for _c in _cands:
+        if os.path.isdir(os.path.join(_c, "skills")):
+            return _c
+    return os.path.abspath(os.path.join(_here, "..", "..", ".."))
+
+
+BASE = _data_root()  # 数据根（2026-10-16 解耦；原为写死路径）
+
+
 CST = timezone(timedelta(hours=8))
-DEFAULT_ROOT = os.environ.get("SKILLS_ROOT", os.path.expanduser("~/.hermes/skills"))
+DEFAULT_ROOT = os.environ.get("SKILLS_ROOT", BASE + "/skills")
 
 
 def load_usage(root: Path) -> dict:
@@ -35,6 +55,27 @@ def load_usage(root: Path) -> dict:
     except Exception as e:  # 台账坏了也要能跑
         print(f"WARN: 台账解析失败（{e}）→ 按空台账处理", file=sys.stderr)
         return {}
+
+
+def load_cron_map(base: Path) -> dict:
+    """skill → ['启用:任务名' / '暂停:任务名']。cron 一停，绑它的 skill 自然「很久没动」——
+    这层是事实，不是判断：表里先让人看见，再决定要不要动。（2026-11-02 加）"""
+    p = base / "cron" / "jobs.json"
+    if not p.exists():
+        return {}
+    try:
+        j = json.load(open(p, encoding="utf-8"))
+    except Exception:
+        return {}
+    jobs = j if isinstance(j, list) else j.get("jobs", [])
+    out = {}
+    for job in jobs:
+        names = job.get("skills") or ([job["skill"]] if job.get("skill") else [])
+        flag = "启用" if job.get("enabled") else "暂停"
+        for n in names:
+            if n:
+                out.setdefault(n, []).append(f"{flag}:{job.get('name','?')}")
+    return out
 
 
 def parse_day(ts):
@@ -62,6 +103,7 @@ def main():
         print(f"ERROR: 技能目录不存在：{root}")
         return 1
     usage = load_usage(root)
+    cron_map = load_cron_map(Path(BASE))
     now = datetime.now(CST)
 
     rows, fresh = [], []
@@ -80,6 +122,7 @@ def main():
             "last": last.strftime("%Y-%m-%d") if last else "从未",
             "use": r.get("use_count") or 0, "view": r.get("view_count") or 0,
             "kb": size, "scripts": has_scripts, "state": r.get("state", "?"), "age": age,
+            "cron": "、".join(cron_map.get(d.name, [])) or "-",
         }
         # 零调用但刚建的（<30 天）不算候选
         if rec["use"] == 0 and (age is None or age < 30):
@@ -96,14 +139,16 @@ def main():
 
     cand = [r for r in rows if r["gap"] >= a.days or r["gap"] == -1]
     print(f"技能库出库候选扫描 · 阈值 {a.days} 天 · 扫描 {len(rows) + len(fresh)} 个 skill\n")
-    print(f"{'skill':36s} {'最后调用':>10} {'天':>5} {'用':>4} {'KB':>6} {'脚本':>4}  state")
-    print("-" * 82)
+    print(f"{'skill':36s} {'最后调用':>10} {'天':>5} {'用':>4} {'KB':>6} {'脚本':>4}  {'state':8s} cron")
+    print("-" * 100)
     for r in cand:
-        print(f"{r['skill']:36s} {r['last']:>10} {r['gap']:>5} {r['use']:>4} {r['kb']:>6} {r['scripts']:>4}  {r['state']}")
+        print(f"{r['skill']:36s} {r['last']:>10} {r['gap']:>5} {r['use']:>4} {r['kb']:>6} {r['scripts']:>4}  {r['state']:8s} {r['cron']}")
     print(f"\n候选合计 {len(cand)} 个（≥{a.days} 天没动）。")
     if fresh:
         print(f"另：零调用但创建不满 30 天的 {len(fresh)} 个（新 skill，不算候选）：" + "、".join(r["skill"] for r in fresh))
-    print("\n⚠️ 这张表只给事实——出库前过 references/growth-gate.md 的四条资产判据，候选清单交用户裁。")
+    if any(r["cron"].startswith("暂停") for r in cand):
+        print("\n※ cron 列标「暂停:」＝绑它的定时任务已停，skill 不是闲置而是没被触发；要动的可能是那条 cron，不是这个 skill。")
+    print("\n⚠️ 这张表只给事实——出库前过 references/growth-gate.md 的五类保留判据，候选清单交用户裁。")
     return 0
 
 
