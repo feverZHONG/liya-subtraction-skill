@@ -27,7 +27,27 @@ import subprocess
 import sys
 import tempfile
 
-SKILLS = os.environ.get("SKILLS_ROOT", os.path.expanduser("~/.hermes/skills"))
+
+def _data_root():
+    """数据根探测（可迁移/可发布）：$HERMES_ROOT ＞ $SKILL_ROOT ＞ 脚本上溯 ＞ ~/.hermes ＞ 家目录。
+    命中判据：该层下存在 skills/ 目录。2026-10-16 解耦（原为写死绝对路径）。"""
+    for _env in ("HERMES_ROOT", "SKILL_ROOT"):
+        _v = os.environ.get(_env)
+        if _v and os.path.isdir(os.path.join(_v, "skills")):
+            return _v
+    _here = os.path.dirname(os.path.abspath(__file__))
+    _cands = [os.path.abspath(os.path.join(_here, *([".."] * _n))) for _n in range(1, 5)]
+    _cands += [os.path.expanduser("~/.hermes"), os.path.expanduser("~")]
+    for _c in _cands:
+        if os.path.isdir(os.path.join(_c, "skills")):
+            return _c
+    return os.path.abspath(os.path.join(_here, "..", "..", ".."))
+
+
+BASE = _data_root()  # 数据根（2026-10-16 解耦；原为写死绝对路径）
+
+
+SKILLS = os.environ.get("SKILLS_ROOT", BASE + "/skills")
 SCRIPTS = os.path.join(SKILLS, "skill-curation", "scripts")
 def _find_repo(start):
     """往上找第一个含 .git 的目录＝仓库根（别用固定层数——脚本换位置就错）。"""
@@ -114,8 +134,11 @@ def cmd_stats(argv):
     print(f"{'skill':30} {'行':>5} {'字符':>7} {'字节':>7} {'总KB':>8} {'refs':>4} {'scr':>4} {'desc':>5}")
     for r in rows:
         flag = ""
-        if r["chars"] > 15000:
-            flag = " ⚠️字符肥"
+        flag = ""
+        if r["chars"] > 12000:
+            flag = " ⚠️必拆(字符)"
+        elif r["chars"] > 8000:
+            flag = " ·偏肥(字符)"
         elif r["lines"] > 200:
             flag = " ⚠️行数高(查是否表格撑的)"
         elif r["lines"] > 95:
@@ -126,7 +149,7 @@ def cmd_stats(argv):
     print(f"\n技能数 {len(allr)}｜description 合计 {sum(r['desc'] for r in allr)} 字符"
           f"（中位 {sorted(r['desc'] for r in allr)[len(allr) // 2]}）"
           f"｜SKILL.md 合计 {sum(r['chars'] for r in allr)} 字符")
-    print("口径：排序看 chars 不看 lines——表格/清单多的 skill 行数会虚高（实测 rimworld 243 行只有 6.8K 字符）。")
+    print("口径：排序看 chars 不看 lines——表格/清单多的 skill 行数会虚高；字数主判据 >8K 偏肥、>12K 必拆（2026-11-10 定）。")
     return 0
 
 

@@ -22,6 +22,7 @@ description: >-
 | 审查技能的实际用途 | `references/04-usage-review.md` |
 | 把厚 SKILL.md 拆薄（功能拆分+实操流程+GROUP 优先级） | `references/skill-thinning-workflow.md` |
 | description 太长怎么裁（>60 字符的收紧法） | `references/description-trimming.md` |
+| **拆薄判据（字数优先：>8K 偏肥、>12K 必拆；行数只作辅）** | `bin/sk stats --sort chars` |
 | **拆薄工具（spec 驱动、守恒校验，规矩留案例搬；三种定位：整节／单条／行段）** | `scripts/skill_thin.py` |
 | 增量反馈沉淀到技能 | `references/06-runtime-enrichment.md` |
 | 确定哪些技能入仓/排除 | `references/07-version-control-classification.md` |
@@ -49,13 +50,13 @@ description: >-
   `job-eta-tracking`，内容都是当场实战的教训）——**不是另一个会话，当助手看待**，别当冲突处理。
 - 但**落笔前仍要先看现状**：`git diff` 一眼 ＋ 读目标节，撞重复的当场合并归位（一条规则一个位置，不留两遍）。
 - 改 INDEX 类共享文件时**防列头**（并行写入别把表头挤掉）。
-- **curator 归档只动磁盘、不 stage（2026-10-11 实证）**：Hermes 自带 curator 按「30 天未用」自动把 skill `mv` 进 `skills/.archive/`，但**从不 stage git 删除** → `git ls-files` 留幽灵路径，每日文字存档（`scripts/backup_text.py` 按 ls-files 取文件）连日报警、更早的版本整包失败。已复发两轮（09-27 九条、10-11 十条）。查/复位：`hermes curator status` / `list-archived` / `restore <name>`；收尾一条命令 `bin/tidy index --fix` ＋ **单独提交**（自动补推脚本只推不提交，staged 删除不会自己落库）。
-- **它不认 growth-gate 的五类保留**：季节性（`typhoon-monitor`）、内容型数值库（`build-analysis`）都被纯闲置时间吃掉；这类原本靠「被 cron 引用＝当 pinned」护着（curator 把 cron 引用视为 pinned），cron 一停护身符就没了。
-- **2026-10-11 起已把自动归档关掉（用户拍「丙」）**：`hermes config set curator.archive_after_days 3650` —— 只留 14d stale 标记，**归档改人工**（季度对账 `bin/sk retire` 出表 → 用户裁 → `hermes curator archive <name>`）。闸的原因：61 件受管件里 43 件属五类，逐件 pin 与关阀等效；且与本节「候选清单只交用户垂裁」一致。⚠️ `config.yaml` 在 `.gitignore` 里，**换机/重装后要补这一行**。
+- **curator 归档只动磁盘、不 stage（2026-10-11 实证）**：Hermes 自带 curator 按「30 天未用」自动把 skill `mv` 进 `skills/.archive/`，但**从不 stage git 删除** → `git ls-files` 留幽灵路径，每日文字存档（`scripts/backup_text.py` 按 ls-files 取文件）连日报警、更早的版本整包失败。已复发两轮（09-27 九条、10-11 十条）。查/复位：`hermes curator status` / `list-archived` / `restore <name>`；收尾一条命令 `bin/tidy index --fix` ＋ **单独提交**（`git_auto_repush.py` 只推不提交，staged 删除不会自己落库）。
+- **它不认 growth-gate 的五类保留**：季节性（`typhoon-monitor`）、内容型数值库（`build-analysis`）都被纯闲置时间吃掉；这类原本靠「被 cron 引用＝当 pinned」护着（`curator.py` 把 cron 引用视为 pinned），cron 一停护身符就没了。
+- **2026-10-11 起已把自动归档关掉（用户拍「丙」）**：`hermes config set curator.archive_after_days 3650` —— 只留 14d stale 标记，**归档改人工**（季度对账 `bin/sk retire` 出表 → 用户裁 → `hermes curator archive <name>`）。闸的原因：61 件受管件里 43 件属五类，逐件 pin 与关阀等效；且与本节「候选清单只交用户垂裁」一致。⚠️ `config.yaml` 在 `.gitignore` 里，**换机/重装后要补这一行**；账面与实测见 `workspace/records/2026-10-11-curator保护扫描.md`。
 
 ## 技能结构规范（用户偏好）
 
-> **自留地（2026-10-11 用户点名）：** 库内结构问题——skill 落点错/嵌进分类目录、索引脏、空壳残骸——**是 agent 的职责，发现即办，不挂账等用户驱动**。挂账只留给需要用户拍板的（删谁、花钱、对外发布）。「先说后做」也适用于此：办完报一声，不必先问。
+> **自留地（2026-10-11 用户点名）：** 库内结构问题——skill 落点错/嵌进分类目录、索引脏、空壳残骸——**是维护者的职责，发现即办，不挂账等用户驱动**。挂账只留给需要用户拍板的（删谁、花钱、对外发布）。「先说后做」也适用于此：办完报一声，不必先问。
 
 - 技能一律**平铺顶层**，内部只分 `references/` `scripts/` `templates/`。
 - **禁嵌套、禁内嵌**；目录深度 ≤ 4 层。
